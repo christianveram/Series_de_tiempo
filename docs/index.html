@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Series de tiempo : Temperatura en la ciudad de Bogotá D.C.</title>
-  <meta name="description" content="Series de tiempo : Temperatura en la ciudad de Bogotá D.C." />
+  <title>Temperatura histórica en la ciudad de Bogotá.</title>
+  <meta name="description" content="Temperatura histórica en la ciudad de Bogotá." />
   <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Series de tiempo : Temperatura en la ciudad de Bogotá D.C." />
+  <meta property="og:title" content="Temperatura histórica en la ciudad de Bogotá." />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Series de tiempo : Temperatura en la ciudad de Bogotá D.C." />
+  <meta name="twitter:title" content="Temperatura histórica en la ciudad de Bogotá." />
   
   
   
@@ -96,7 +96,7 @@ div.csl-indent {
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./">Series de tiempo: Temperatura en Bogotá D.C.</a></li>
+<li><a href="./">Series de tiempo.</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introducción</a></li>
@@ -114,7 +114,7 @@ div.csl-indent {
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Series de tiempo : Temperatura en la ciudad de Bogotá D.C.</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Temperatura histórica en la ciudad de Bogotá.</a>
           </h1>
         </div>
 
@@ -123,18 +123,19 @@ div.csl-indent {
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">Series de tiempo : Temperatura en la ciudad de Bogotá D.C.</h1>
-<p class="author"><em>Christian Vera, Yuli Deaquiz y Juan Rodriguez</em></p>
+<h1 class="title">Temperatura histórica en la ciudad de Bogotá.</h1>
+<p class="author"><em><strong>Christian Vera, Yuli Deaquiz y Juan Rodriguez</strong></em></p>
 <p class="date"><em>2025-04-12</em></p>
 </div>
 <div id="introducción" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Capítulo: 1</span> Introducción<a href="index.html#introducción" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>La base de datos de Meteostat es una fuente robusta y accesible de información meteorológica histórica, que abarca variables como temperatura, precipitación, humedad, presión atmosférica y velocidad del viento, recopiladas desde estaciones meteorológicas distribuidas a nivel global. Esta plataforma es una herramienta importante para la investigación climática y ambiental, tiene cobertura temporal desde inicios del siglo XX y a su actualización continua con datos diarios y horarios. Además, esta base de datos integra fuentes oficiales como servicios meteorológicos nacionales, redes de observación internacionales y datos satelitales, lo cual garantiza un alto nivel de confiabilidad y precisión en la generación de modelos predictivos y generación de escenarios de cambio climático <span class="citation"><a href="#ref-meteostat2024">[1]</a></span>.</p>
+<p>La base de datos de <strong>Meteostat</strong> es una fuente robusta y accesible de información meteorológica histórica, que abarca variables como temperatura, precipitación, humedad, presión atmosférica y velocidad del viento, recopiladas desde estaciones meteorológicas distribuidas a nivel global. Esta plataforma es una herramienta importante para la investigación climática y ambiental, tiene cobertura temporal desde inicios del siglo XX y a su actualización continua con datos diarios y horarios. Además, esta base de datos integra fuentes oficiales como servicios meteorológicos nacionales, redes de observación internacionales y datos satelitales, lo cual garantiza un alto nivel de confiabilidad y precisión en la generación de modelos predictivos y generación de escenarios de cambio climático <span class="citation"><a href="#ref-meteostat2024">[1]</a></span>.</p>
 <p>Por lo que, el análisis y pronóstico de datos meteorológicos es una herramienta clave para diversos sectores productivos y sociales, al permitir anticipar condiciones ambientales que impactan directamente en la operación, sostenibilidad y toma de decisiones<span class="citation"><a href="#ref-boisvenue2020simulated">[2]</a></span>. Un ejemplo de ello se da en el sector agrícola, donde el uso de datos meteorológicos permite optimizar épocas de siembra, uso adecuado del agua y zonas aptas para el establecimiento de cultivos. De acuerdo con Zampieri et al.<span class="citation"><a href="#ref-zampieri2021wheat">[3]</a></span>, el cambio climático afecta el rendimiento agrícola, por lo que integrar esta información a los sistemas de decisión puede mejorar la producción. Asimismo, Khaki et al. <span class="citation"><a href="#ref-khaki2020cnn">[4]</a></span> muestran cómo los modelos de predicción basados en datos meteorológicos mejoran la precisión del pronóstico de rendimiento de cultivos, permitiendo una planificación más eficiente.</p>
 <p>En el ámbito urbano, el análisis climático apoya la planificación de infraestructuras y ciudades más adaptadas al calentamiento global. Estudios han demostrado que las proyecciones meteorológicas, combinadas con datos históricos, permiten modelar el impacto y mejorar el diseño urbano para enfrentar eventos extremos <span class="citation"><a href="#ref-johansson2021urban">[5]</a></span>. Ciudades que integran esta información pueden reducir su vulnerabilidad ante olas de calor, inundaciones o aumentos en la demanda energética. Desde la perspectiva energética, el pronóstico meteorológico es crucial para integrar fuentes renovables como la energía solar y eólica en los sistemas eléctricos modernos.</p>
 <p>La generación de energía renovable depende en gran medida de condiciones climáticas, por lo que prever estas variaciones permite una mejor gestión de la oferta y la demanda energética. Según Wytock et al.<span class="citation"><a href="#ref-wytock2021weather">[6]</a></span>, la precisión en el pronóstico del clima mejora la operación de redes inteligentes y reduce los costos de almacenamiento y distribución de energía. En el campo de la salud pública y el cambio climático, los registros meteorológicos históricos son fundamentales para estudiar la relación entre condiciones ambientales y enfermedades<span class="citation"><a href="#ref-watts2022lancet">[7]</a></span>.</p>
 <p>Es por esto que, el análisis y pronóstico del clima permite anticipar y gestionar los efectos del clima en la agricultura, las ciudades, la energía y la salud. El aprovechamiento de estos datos es esencial no solo para la eficiencia operativa, sino también para la construcción de sociedades más resilientes y sostenibles frente al cambio climático global <span class="citation"><a href="#ref-ipcc2021physical">[8]</a></span>.</p>
-<p>Finalmente, para este estudio, se analizarán también los datos proporcionados por el IDEAM correspondientes a la estación meteorológica 80222 de la Organización Meteorológica Mundial (WMO), ubicada en el Aeropuerto Internacional El Dorado (SKBO) en Bogotá. Esta estación representa una fuente confiable y de alta calidad para el monitoreo climático a nivel local, ya que cuenta con registros continuos y estandarizados que permiten complementar el análisis histórico y el modelado climático con una perspectiva más precisa del contexto urbano de la capital colombiana.</p>
+<p>Finalmente, para este estudio, se analizarán también los datos proporcionados por el IDEAM correspondientes a la estación meteorológica 80222 de la <strong>Organización Meteorológica Mundial (WMO)</strong>, ubicada en el Aeropuerto Internacional El Dorado (SKBO) en Bogotá con datos extraídos de Meteostat. Esta estación representa una fuente confiable y de alta calidad para el monitoreo climático a nivel local, ya que cuenta con registros continuos y estandarizados que permiten complementar el análisis histórico y el modelado climático con una perspectiva más precisa del contexto urbano de la capital del país.</p>
+<hr />
 
 </div>
 <h3>Referencias<a href="referencias.html#referencias" class="anchor-section" aria-label="Anchor link to header"></a></h3>

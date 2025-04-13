@@ -3,6 +3,6 @@ bookdown::gitbook:
   config:
     toc:
       before: |
-        <li><a href="./">Series de tiempo: Temperatura en Bogotá D.C.</a></li>
+        <li><a href="./">Series de tiempo.</a></li>
       after: |
         <li><a href="https://github.com/christianveram/Series_de_tiempo/" target="blank">Enlace a Github</a></li>
