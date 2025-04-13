@@ -2,7 +2,8 @@
 title: "Series de tiempo  "
 author: "Christian Vera, Yuli Deaquiz y Juan Rodriguez "
 date: "`r Sys.Date()`"
-bibliography: referencias.bib
+bibliography: referencias.bib  # Nombre del archivo .bib
+link-citations: true          # Para enlazar citas a las referencias
 site: bookdown::bookdown_site
 ---
 
