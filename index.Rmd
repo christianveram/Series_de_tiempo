@@ -2,6 +2,7 @@
 title: "Series de tiempo  "
 author: "Christian Vera, Yuli Deaquiz y Juan Rodriguez "
 date: "`r Sys.Date()`"
+bibliography: referencias.bib
 site: bookdown::bookdown_site
 ---
 
