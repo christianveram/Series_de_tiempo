@@ -12,3 +12,8 @@ pre {
 pre code {
   white-space: inherit;
 }
+
+/* Justificar el texto */
+p {
+  text-align: justify;
+}
