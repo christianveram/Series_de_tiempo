@@ -1,6 +1,6 @@
 ---
 title: " Temperatura histórica en la ciudad de Bogotá."
-author: "**Christian Vera, Yuli Deaquiz y Juan Rodriguez** "
+author: "**Christian Vera, Yuli Deaquiz y Juan Rodríguez** "
 date: "`r Sys.Date()`"
 bibliography: referencias.bib
 link-citations: true
