@@ -7,3 +7,4 @@ bookdown::gitbook:
       after: |
         <li><a href="https://github.com/christianveram/Series_de_tiempo/" target="blank">Enlace a Github</a></li>
     download: ["pdf"]
+  code_folding: hide

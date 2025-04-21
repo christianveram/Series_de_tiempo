@@ -31,7 +31,7 @@
   
   
 
-<link rel="next" href="section.html"/>
+<link rel="next" href="entregable-2.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -49,11 +49,76 @@
 
 
 
+<link href="libs/codefolding-lua-1.1/codefolding-lua.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 <style type="text/css">
   
@@ -100,8 +165,11 @@ div.csl-indent {
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introducción</a></li>
-<li class="chapter" data-level="2" data-path="section.html"><a href="section.html"><i class="fa fa-check"></i><b>2</b> 2</a></li>
-<li class="chapter" data-level="3" data-path="section-1.html"><a href="section-1.html"><i class="fa fa-check"></i><b>3</b> 3</a></li>
+<li class="chapter" data-level="2" data-path="entregable-2.html"><a href="entregable-2.html"><i class="fa fa-check"></i><b>2</b> Entregable 2</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="entregable-2.html"><a href="entregable-2.html#descripción-de-los-datos"><i class="fa fa-check"></i><b>2.1</b> Descripción de los datos</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="section.html"><a href="section.html"><i class="fa fa-check"></i><b>3</b> 3</a></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/christianveram/Series_de_tiempo/" target="blank">Enlace a Github</a></li>
@@ -130,10 +198,10 @@ div.csl-indent {
 </div>
 <div id="introducción" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Capítulo: 1</span> Introducción<a href="index.html#introducción" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>La base de datos de <strong>Meteostat</strong> es una fuente robusta y accesible de información meteorológica histórica, que abarca variables como temperatura, precipitación, humedad, presión atmosférica y velocidad del viento, recopiladas desde estaciones meteorológicas distribuidas a nivel global. Esta plataforma es una herramienta importante para la investigación climática y ambiental, tiene cobertura temporal desde inicios del siglo XX y a su actualización continua con datos diarios y horarios. Además, esta base de datos integra fuentes oficiales como servicios meteorológicos nacionales, redes de observación internacionales y datos satelitales, lo cual garantiza un alto nivel de confiabilidad y precisión en la generación de modelos predictivos y generación de escenarios de cambio climático<span class="citation"><a href="#ref-meteostat2024">[1]</a></span>.</p>
-<p>Por lo que, el análisis y pronóstico de datos meteorológicos es una herramienta clave para diversos sectores productivos y sociales, al permitir anticipar condiciones ambientales que impactan directamente en la operación, sostenibilidad y toma de decisiones<span class="citation"><a href="#ref-boisvenue2020simulated">[2]</a></span>. Un ejemplo de ello se da en el sector agrícola, donde el uso de datos meteorológicos permite optimizar épocas de siembra, uso adecuado del agua y zonas aptas para el establecimiento de cultivos. De acuerdo con Zampieri et al.<span class="citation"><a href="#ref-zampieri2021wheat">[3]</a></span>, el cambio climático afecta el rendimiento agrícola, por lo que integrar esta información a los sistemas de decisión puede mejorar la producción. Asimismo, Khaki et al. <span class="citation"><a href="#ref-khaki2020cnn">[4]</a></span> muestran cómo los modelos de predicción basados en datos meteorológicos mejoran la precisión del pronóstico de rendimiento de cultivos, permitiendo una planificación más eficiente.</p>
+<p>La base de datos de <strong>Meteostat</strong> es una fuente robusta y accesible de información meteorológica histórica, que abarca variables como temperatura, precipitación, humedad, presión atmosférica y velocidad del viento, recopiladas desde estaciones meteorológicas distribuidas a nivel global. Esta plataforma es una herramienta importante para la investigación climática y ambiental, tiene cobertura temporal desde inicios del siglo XX y tiene actualización continua con datos diarios y horarios. Además, esta base de datos integra fuentes oficiales como servicios meteorológicos nacionales, redes de observación internacionales y datos satelitales, lo cual garantiza un alto nivel de confiabilidad y precisión en la generación de modelos predictivos y generación de escenarios de cambio climático<span class="citation"><a href="#ref-meteostat2024">[1]</a></span>.</p>
+<p>Por lo que, el análisis y pronóstico de datos meteorológicos es una herramienta clave para diversos sectores productivos y sociales, al permitir anticipar condiciones ambientales que impactan directamente en la operación, sostenibilidad y toma de decisiones<span class="citation"><a href="#ref-boisvenue2020simulated">[2]</a></span>. Un ejemplo de ello se da en el sector agrícola, donde el uso de datos meteorológicos permite optimizar épocas de siembra, uso adecuado del agua y zonas aptas para el establecimiento de cultivos. De acuerdo con <span class="citation"><a href="#ref-zampieri2021wheat">[3]</a></span>, el cambio climático afecta el rendimiento agrícola, por lo que integrar esta información a los sistemas de decisión puede mejorar la producción. Asimismo, <span class="citation"><a href="#ref-khaki2020cnn">[4]</a></span> muestran cómo los modelos de predicción basados en datos meteorológicos mejoran la precisión del pronóstico de rendimiento de cultivos, permitiendo una planificación más eficiente.</p>
 <p>En el ámbito urbano, el análisis climático apoya la planificación de infraestructuras y ciudades más adaptadas al calentamiento global. Estudios han demostrado que las proyecciones meteorológicas, combinadas con datos históricos, permiten modelar el impacto y mejorar el diseño urbano para enfrentar eventos extremos <span class="citation"><a href="#ref-johansson2021urban">[5]</a></span>. Ciudades que integran esta información pueden reducir su vulnerabilidad ante olas de calor, inundaciones o aumentos en la demanda energética. Desde la perspectiva energética, el pronóstico meteorológico es crucial para integrar fuentes renovables como la energía solar y eólica en los sistemas eléctricos modernos.</p>
-<p>La generación de energía renovable depende en gran medida de condiciones climáticas, por lo que prever estas variaciones permite una mejor gestión de la oferta y la demanda energética. Según Wytock et al.<span class="citation"><a href="#ref-wytock2021weather">[6]</a></span>, la precisión en el pronóstico del clima mejora la operación de redes inteligentes y reduce los costos de almacenamiento y distribución de energía. En el campo de la salud pública y el cambio climático, los registros meteorológicos históricos son fundamentales para estudiar la relación entre condiciones ambientales y enfermedades<span class="citation"><a href="#ref-watts2022lancet">[7]</a></span>.</p>
+<p>La generación de energía renovable depende en gran medida de condiciones climáticas, por lo que prever estas variaciones permite una mejor gestión de la oferta y la demanda energética. Según <span class="citation"><a href="#ref-wytock2021weather">[6]</a></span>, la precisión en el pronóstico del clima mejora la operación de redes inteligentes y reduce los costos de almacenamiento y distribución de energía. En el campo de la salud pública y el cambio climático, los registros meteorológicos históricos son fundamentales para estudiar la relación entre condiciones ambientales y enfermedades<span class="citation"><a href="#ref-watts2022lancet">[7]</a></span>.</p>
 <p>Es por esto que, el análisis y pronóstico del clima permite anticipar y gestionar los efectos del clima en la agricultura, las ciudades, la energía y la salud. El aprovechamiento de estos datos es esencial no solo para la eficiencia operativa, sino también para la construcción de sociedades más resilientes y sostenibles frente al cambio climático global <span class="citation"><a href="#ref-ipcc2021physical">[8]</a></span>.</p>
 <p>Finalmente, para este estudio, se analizarán los datos de temperatura media proporcionados por el IDEAM, correspondientes a la estación meteorológica 80222 de la Organización Meteorológica Mundial (WMO), ubicada en el Aeropuerto Internacional El Dorado (SKBO) en Bogotá. Estos datos fueron extraídos mediante la API gratuita de Meteostat en Python. Esta estación representa una fuente confiable y de alta calidad para el monitoreo climático a nivel local, ya que cuenta con registros continuos que permiten complementar el análisis histórico y el modelado climático, proporcionando una perspectiva más precisa del contexto urbano.</p>
 <hr />
@@ -172,7 +240,7 @@ div.csl-indent {
         </div>
       </div>
 
-<a href="section.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="entregable-2.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

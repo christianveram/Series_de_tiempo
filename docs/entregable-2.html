@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Capítulo: 3 3 | Temperatura histórica en la ciudad de Bogotá.</title>
-  <meta name="description" content="Capítulo: 3 3 | Temperatura histórica en la ciudad de Bogotá." />
+  <title>Capítulo: 2 Entregable 2 | Temperatura histórica en la ciudad de Bogotá.</title>
+  <meta name="description" content="Capítulo: 2 Entregable 2 | Temperatura histórica en la ciudad de Bogotá." />
   <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Capítulo: 3 3 | Temperatura histórica en la ciudad de Bogotá." />
+  <meta property="og:title" content="Capítulo: 2 Entregable 2 | Temperatura histórica en la ciudad de Bogotá." />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Capítulo: 3 3 | Temperatura histórica en la ciudad de Bogotá." />
+  <meta name="twitter:title" content="Capítulo: 2 Entregable 2 | Temperatura histórica en la ciudad de Bogotá." />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="entregable-2.html"/>
-<link rel="next" href="referencias.html"/>
+<link rel="prev" href="index.html"/>
+<link rel="next" href="section.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -191,17 +191,38 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="section" class="section level1 hasAnchor" number="3">
-<h1><span class="header-section-number">Capítulo: 3</span> 3<a href="section.html#section" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="entregable-2" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Capítulo: 2</span> Entregable 2<a href="entregable-2.html#entregable-2" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>En este momento deberemos retomar la Unidad 1 en la cual se creó un minilibro que contiene el entregable de dicha unidad. Este documento tiene como repositorio GitHub (elaborado desde Markdown). Ahora, en esta Unidad 2, se debe continuar con los datos presentados en dicho entregable y se debe evidenciar, en una de las variables en el tiempo, la aproximación en promedio móvil, en rezagos y en estacionalidad. Todo lo anterior, a través de funciones y gráficas que permitan detectar patrones y ciclos de la variable.</p>
+<div id="descripción-de-los-datos" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Descripción de los datos<a href="entregable-2.html#descripción-de-los-datos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="entregable-2.html#cb1-1" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/Temperatura.csv&quot;</span></span>
+<span id="cb1-2"><a href="entregable-2.html#cb1-2" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url)</span>
+<span id="cb1-3"><a href="entregable-2.html#cb1-3" tabindex="-1"></a><span class="fu">str</span>(datos)</span></code></pre></div>
+</details>
+<pre><code>## &#39;data.frame&#39;:    24941 obs. of  11 variables:
+##  $ time: chr  &quot;1941-03-02&quot; &quot;1941-03-12&quot; &quot;1941-03-13&quot; &quot;1941-03-16&quot; ...
+##  $ tavg: num  17.1 16.9 19 16.5 17.3 18.1 19.4 19 19.4 17.2 ...
+##  $ tmin: num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ tmax: num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ prcp: num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ snow: num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ wdir: num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ wspd: num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ wpgt: logi  NA NA NA NA NA NA ...
+##  $ pres: num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ tsun: logi  NA NA NA NA NA NA ...</code></pre>
 
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="entregable-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="referencias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="section.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -232,7 +253,7 @@ gitbook.start({
     "size": 2
   },
   "edit": {
-    "link": "https://github.com/christianveram/Series_de_tiempo/edit/main/03-Cap3.Rmd",
+    "link": "https://github.com/christianveram/Series_de_tiempo/edit/main/02-Cap2.Rmd",
     "text": "Edit"
   },
   "history": {
@@ -240,7 +261,7 @@ gitbook.start({
     "text": null
   },
   "view": {
-    "link": "https://github.com/christianveram/Series_de_tiempo/blob/main/03-Cap3.Rmd",
+    "link": "https://github.com/christianveram/Series_de_tiempo/blob/main/02-Cap2.Rmd",
     "text": null
   },
   "download": ["bookdownproj.pdf"],
