@@ -1,10 +1,12 @@
 # Medias Móviles, Rezagos y Descomposición de la Serie Temporal
 
-En este momento deberemos retomar la Unidad 1 en la cual se creó un minilibro que contiene el entregable de dicha unidad. Este documento tiene como repositorio GitHub (elaborado desde Markdown). Ahora, en esta Unidad 2, se debe continuar con los datos presentados en dicho entregable y se debe evidenciar, en una de las variables en el tiempo, la aproximación en promedio móvil, en rezagos y en estacionalidad. Todo lo anterior, a través de funciones y gráficas que permitan detectar patrones y ciclos de la variable.
+Christian Vera, Yuli Deaquiz y Juan Rodríguez
+
+26/04/2025
 
 En primer lugar, se identifica la ventana temporal de las temperaturas registradas por este sensor, la cual comprende datos diarios desde el 1 de enero de 1975 hasta el 31 de marzo de 2025. No obstante, es importante señalar que el conjunto de datos incluye observaciones que se remontan hasta el año 1941, lo que proporciona una perspectiva histórica amplia. Sin embargo, diversos análisis indican que la calidad y confiabilidad de los registros mejora significativamente a partir de 1972, debido a que en los periodos anteriores se observa una alta frecuencia de valores atípicos y anomalías que podrían comprometer la precisión de cualquier análisis basado en dichas observaciones. Por esta razón, los datos previos a 1972 suelen utilizarse con precaución o ser excluidos de los estudios que requieren alta fiabilidad en las series temporales [@Temperatura_Confiable]. 
 
-Teniendo en cuenta lo anterior, se realizaran distintos análisis temporales de la temperatura promedio de la ciudad de Bogotá. Para ello, se aplicarán técnicas de suavizamiento mediante el cálculo de promedios móviles, así como análisis de rezagos y de estacionalidad. Estas aproximaciones permitirán identificar y representar patrones, tendencias y ciclos a lo largo del tiempo, utilizando funciones estadísticas y gráficas que faciliten la interpretación visual y analítica del comportamiento de la variable.
+Teniendo en cuenta lo anterior, se realizaran distintos análisis temporales de la temperatura promedio de la ciudad de Bogotá. Para ello, se aplicarán técnicas de suavizamiento mediante el cálculo de promedios móviles, así como análisis de rezagos y de estacionalidad. Estas aproximaciones permitirán identificar y representar patrones, tendencias y ciclos a lo largo del tiempo.
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(tidyr)
@@ -19,7 +21,7 @@ En el siguiente enlace se puede apreciar el proceso de extracción mediante las 
 
 [Notebook de descarga de datos en GitHub](https://github.com/christianveram/Series_de_tiempo/blob/main/extraccion/Descargar%20conjunto%20de%20datos.ipynb)
 
-```{r, include=FALSE, message=FALSE, warning=FALSE}
+```{r, include=TRUE, message=FALSE, warning=FALSE}
 library(knitr)
 library(kableExtra)
 
@@ -27,7 +29,7 @@ url <- "https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/h
 datos <- read.csv(url)
 datos$time <- as.Date(datos$time)
 
-# Mostrar primeras 10 filas en kableExtra
+# Mostrar tipo datos
 datos %>%
   select(time, tavg) %>%
   summarise(across(everything(), ~class(.))) %>%
@@ -50,7 +52,7 @@ datos_filtrados <- datos %>%
   arrange(fecha)  %>%
   filter(fecha >= as.Date("1975-01-01"))
 
-# Redondear la columna 'tavg' a dos decimales
+# 'tavg' a dos decimales
 datos_filtrados <- datos_filtrados %>%
   mutate(tavg = round(tavg, 2))
 
@@ -60,12 +62,12 @@ datos_filtrados <- datos_filtrados %>%
 
 El promedio móvil simple (SMA) es una técnica de suavizamiento que consiste en calcular el promedio de un número fijo de observaciones consecutivas. Sirve para reducir el "ruido" en los datos y destacar patrones como tendencias o ciclos, ayudando en el análisis visual de series de tiempo antes de aplicar modelos más complejos.
 
-Se calcularon dos promedios móviles simples (SMA) sobre la variable de temperatura promedio diaria (tavg), utilizando ventanas de 7 y 30 días respectivamente. Para ello, se aplicó la función rollmean, permitiendo un relleno de valores faltantes con NA y alineando las medias móviles hacia la derecha. Luego, se construyó un gráfico de líneas que incluye la serie original de temperatura (en gris claro) y las dos curvas suavizadas correspondientes a los promedios móviles (en azul acero para 7 días y rojo oscuro para 30 días).
+Se calcularon dos promedios móviles simples (SMA) sobre la variable de temperatura promedio diaria (tavg), utilizando ventanas de 7 y 30 días respectivamente. Para ello, se aplicó la función rollmean, permitiendo un relleno de valores faltantes con NA presente el algunos días de la serie y alineando las medias móviles hacia la derecha. Luego, se construyó un gráfico de líneas que incluye la serie original de temperatura (en gris claro) y las dos curvas suavizadas correspondientes a los promedios móviles (en azul acero para 7 días y rojo oscuro para 30 días).
 
-Esta gráfica permite observar la evolución suavizada de la temperatura a lo largo del tiempo, eliminando la variabilidad diaria que puede ocultar patrones generales. El promedio móvil de 7 días capta fluctuaciones semanales, mientras que el de 30 días refleja tendencias de más largo plazo. Así, se facilita la identificación de cambios de tendencia y ciclos más amplios en la serie de temperaturas.
+Esta gráfica permite observar la evolución suavizada de la temperatura a lo largo del tiempo, eliminando la variabilidad diaria que puede ocultar patrones generales. El promedio móvil de 7 días capta fluctuaciones semanales, mientras que el de 30 días refleja tendencias de más largo plazo. Al observar esta última, se evidencia una tendencia ascendente en la temperatura promedio, especialmente notable en las últimas décadas.
 
 
-```{r,include=TRUE, message=FALSE, warning=FALSE}
+```{r,include=TRUE, message=FALSE, warning=FALSE,fig.align='center'}
 
 library(tidyr)
 library(dplyr)
@@ -75,19 +77,22 @@ library(ggplot2)
 datos_filtrados <- datos_filtrados %>%
   mutate(
     sma_7 = rollmean(tavg, k = 7, fill = NA, align = "right"),
-    sma_30 = rollmean(tavg, k = 30, fill = NA, align = "right")
-  )
+    sma_30 = rollmean(tavg, k = 30, fill = NA, align = "right"))
 
-# Crear la gráfica con ggplot
+# gráfica con ggplot
 grafica <- ggplot(datos_filtrados, aes(x = fecha)) +
-  geom_line(aes(y = tavg), color = "gray70", size = 0.5) +
-  geom_line(aes(y = sma_7), color = "steelblue", size = 0.5) +
-  geom_line(aes(y = sma_30), color = "darkred", size = 0.5) +
+  geom_line(aes(y = tavg, color = "Temperatura Promedio"), size = 0.5) +
+  geom_line(aes(y = sma_7, color = "Media Móvil 7 Días"), size = 0.5) + 
+  geom_line(aes(y = sma_30, color = "Media Móvil 30 Días"), size = 0.5) +
   labs(title = "Temperatura promedio con medias móviles",
        x = "Fecha", y = "Temperatura promedio (°C)") +
-  theme_minimal()
+  scale_color_manual(values = c("Temperatura Promedio" = "gray70",
+                                "Media Móvil 7 Días" = "steelblue", 
+                                "Media Móvil 30 Días" = "darkred")) +
+  theme_minimal() +
+  theme(legend.title = element_blank(),
+        plot.title = element_text(hjust = 0.5))
 
-# Mostrar la gráfica sin hacerla interactiva
 print(grafica)
 
 
@@ -95,44 +100,44 @@ print(grafica)
 
 ## Rezagos (lags de 1, 7 y 30 días)
 
-Un rezago (lag) en series de tiempo consiste en desplazar la serie hacia atrás en el tiempo para observar cómo los valores pasados afectan a los valores presentes o futuros. Analizar los rezagos permite identificar autocorrelaciones, que son relaciones importantes para modelar y predecir series temporales.
+Un rezago (lag) en series de tiempo consiste en desplazar la serie hacia atrás en el tiempo para observar cómo los valores pasados afectan a los valores presentes o futuros. El análisis de los rezagos permite identificar autocorrelaciones, que son relaciones importantes para modelar y predecir series temporales.
 
-Se generaron tres nuevas variables de rezago (lag_1, lag_7 y lag_30), que corresponden a la temperatura promedio registrada en esa cantidad de días. La gráfica ilustra la relación entre la temperatura de un día y la del día anterior. Una correlación positiva sugiere que existe dependencia temporal en la serie, es decir, que los valores actuales están influenciados por los valores pasados.
+Se generaron tres nuevas variables de rezago (lag_1, lag_7 y lag_30), que corresponden a la temperatura promedio registrada durante esos intervalos de días. La gráfica ilustra la relación entre la temperatura de un día y la del día anterior. Una correlación positiva sugiere la existencia de dependencia temporal en la serie, es decir, que los valores actuales están influenciados por los valores pasados
+
+En esta caso se observa una correlación positiva, lo que indica que la temperatura actual tiende a ser más alta cuando la temperatura en el pasado (ya sea hace 1, 7 o 30 días) también fue más alta. Sin embargo, la fuerza de esta correlación disminuye a medida que aumenta el lapso de tiempo, indicando que la temperatura de días más lejanos en el pasado tiene una menor capacidad predictiva sobre la temperatura del presente en comparación con la temperatura de días más recientes.
 
 
-```{r,include=TRUE, message=FALSE, warning=FALSE}
+```{r,include=TRUE, message=FALSE, warning=FALSE,fig.align='center'}
 library(tidyr)
 library(dplyr)
 library(ggplot2)
 
-# Cálculo de rezagos
+# rezagos
 datos_filtrados <- datos_filtrados %>%
   mutate(
     lag_1 = lag(tavg, 1),
     lag_7 = lag(tavg, 7),
-    lag_30 = lag(tavg, 30)
-  )
+    lag_30 = lag(tavg, 30))
 
-# Reestructurar los datos para facilitar el uso de facetas
 datos_filtrados_long <- datos_filtrados %>%
   gather(key = "lag", value = "lag_value", lag_1, lag_7, lag_30) %>%
   mutate(lag = factor(lag, levels = c("lag_1", "lag_7", "lag_30")))
 
 # Crear la gráfica con ggplot usando facet_wrap
 grafica <- ggplot(datos_filtrados_long, aes(x = lag_value, y = tavg)) +
-  geom_point(alpha = 0.3, color = "purple") +
+  geom_point(alpha = 0.3, color = "blue") +
   geom_smooth(method = "lm", se = FALSE, color = "black", size = 0.5) +  # Línea más fina
   labs(title = "Relación entre temperatura actual y rezago de diferentes días",
        x = "Temperatura rezagada", y = "Temperatura actual") +
-  facet_wrap(~lag, scales = "free") +  # Crea una subgráfica para cada lag
-  theme_minimal()
+  facet_wrap(~lag, scales = "free") +  # subgráfica para cada lag
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))  
 
 # Mostrar la gráfica
 print(grafica)
 
+
 ```
-
-
 
 ## Descomposición STL.
 
@@ -140,13 +145,16 @@ La descomposición STL (Seasonal and Trend decomposition using Loess) es una té
 
 Para analizar la estacionalidad y la tendencia de la serie, se imputaron valores faltantes de la variable tavg mediante interpolación lineal (na.approx). Luego, se transformó la serie en un objeto de tipo ts con frecuencia anual (365 observaciones por año). Se aplicó una descomposición STL (stl) que separa la serie en tendencia, estacionalidad y residuo.
 
-La descomposición STL permite visualizar cómo se estructura la variabilidad de la temperatura promedio en sus componentes principales. La tendencia muestra los cambios a largo plazo en la serie, la estacionalidad revela los patrones cíclicos asociados a las distintas epocas del año, y el residuo indica las fluctuaciones irregulares no explicadas. Este análisis es crucial para entender los comportamientos recurrentes y para preparar adecuadamente los datos para modelos de pronóstico.
+La descomposición STL permite visualizar cómo se estructura la variabilidad de la temperatura promedio en sus componentes principales. La tendencia muestra los cambios a largo plazo en la serie, la estacionalidad revela los patrones cíclicos asociados a las distintas epocas del año, y el residuo indica las fluctuaciones irregulares no explicadas. Este análisis es importante para entender los comportamientos recurrentes y para preparar adecuadamente los datos para modelos de pronóstico.
+
+En este caso se puede extraer lo siguiente: 
+
+* La tendencia muestra un aumento gradual de la temperatura a lo largo del tiempo, especialmente notable a partir de aproximadamente el año 2000. 
+* El componente estacional revela un patrón cíclico que se repite anualmente, lo que sugiere variaciones de temperatura relacionadas con las estaciones del año. 
+* El residuo representa las fluctuaciones irregulares que no se explican ni por la tendencia ni por la estacionalidad, indicando la presencia de variabilidad aleatoria o eventos inusuales en los datos de temperatura. 
 
 
-```{r,include=TRUE, message=FALSE, warning=FALSE}
-
-# Instala plotly si no lo tienes
-# install.packages("plotly")
+```{r,include=TRUE, message=FALSE, warning=FALSE,fig.align='center'}
 
 # Cargar librerías necesarias
 library(plotly)
@@ -172,21 +180,22 @@ grafico_interactivo <- autoplot(descomposicion) +
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 18, color = "#2C3E50"), # Título centrado
-    axis.title = element_text(size = 12),
-    strip.text = element_text(face = "bold", size = 13, color = "#2C3E50"),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12, color = "black"),  # Cambié el color del título
+    axis.title = element_text(size = 11, color = "black"),  # Cambié el color de los títulos de los ejes
+    strip.text = element_text(face = "bold", size = 11, color = "black"),  # Cambié el color del texto de las etiquetas
     panel.grid.minor = element_blank()
   ) +
-  # Ajustar el grosor de las líneas
-  geom_line(size = 0.4)  # Aquí ajustas el grosor de las líneas
+  # Ajustar el grosor de las líneas y el color de la serie
+  geom_line(size = 0.2, color = "blue") 
 
 # Convertir el gráfico ggplot a un gráfico interactivo
 ggplotly(grafico_interactivo)
 
 
+
 ```
 
-En conjunto, el uso de estas tres herramientas —promedios móviles, rezagos y descomposición STL— proporciona una base sólida para comprender la dinámica de la serie de tiempo. Esta aproximación no solo facilita la detección de ciclos estacionales y tendencias ocultas, sino que también es fundamental para diseñar modelos predictivos más robustos. La correcta interpretación de estos componentes permite tomar decisiones mejor informadas en contextos relacionados con el análisis climático, la planificación de recursos o cualquier otro ámbito que requiera un entendimiento detallado del comportamiento temporal de una variable.
+En conjunto, el uso de estas tres herramientas proporcionan una base para comprender la dinámica de la serie de tiempo. Esta aproximación no solo facilita la detección de ciclos estacionales y tendencias ocultas, sino que también es relevante para diseñar modelos predictivos más robustos. La correcta interpretación de estos componentes permite tomar decisiones mejor informadas en contextos relacionados con el análisis climático o la planificación de recursos
 
 
 
