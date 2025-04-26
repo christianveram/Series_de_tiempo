@@ -67,7 +67,6 @@ Esta gráfica permite observar la evolución suavizada de la temperatura a lo la
 
 ```{r,include=TRUE, message=FALSE, warning=FALSE}
 
-library(plotly)
 library(tidyr)
 library(dplyr)
 library(ggplot2)
@@ -80,7 +79,7 @@ datos_filtrados <- datos_filtrados %>%
   )
 
 # Crear la gráfica con ggplot
-grafica_interactiva <- ggplot(datos_filtrados, aes(x = fecha)) +
+grafica <- ggplot(datos_filtrados, aes(x = fecha)) +
   geom_line(aes(y = tavg), color = "gray70", size = 0.5) +
   geom_line(aes(y = sma_7), color = "steelblue", size = 0.5) +
   geom_line(aes(y = sma_30), color = "darkred", size = 0.5) +
@@ -88,11 +87,9 @@ grafica_interactiva <- ggplot(datos_filtrados, aes(x = fecha)) +
        x = "Fecha", y = "Temperatura promedio (°C)") +
   theme_minimal()
 
-# Convertir la gráfica ggplot a plotly para hacerla interactiva
-grafica_interactiva <- ggplotly(grafica_interactiva)
+# Mostrar la gráfica sin hacerla interactiva
+print(grafica)
 
-# Mostrar la gráfica
-grafica_interactiva
 
 ```
 
@@ -103,24 +100,38 @@ Un rezago (lag) en series de tiempo consiste en desplazar la serie hacia atrás 
 Se generaron tres nuevas variables de rezago (lag_1, lag_7 y lag_30), que corresponden a la temperatura promedio registrada en esa cantidad de días. La gráfica ilustra la relación entre la temperatura de un día y la del día anterior. Una correlación positiva sugiere que existe dependencia temporal en la serie, es decir, que los valores actuales están influenciados por los valores pasados.
 
 
-```{r}
-library(plotly)
+```{r,include=TRUE, message=FALSE, warning=FALSE}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
 
-# Crear la gráfica con plotly
-grafica_interactiva <- ggplot(datos_filtrados, aes(x = lag_1, y = tavg)) +
+# Cálculo de rezagos
+datos_filtrados <- datos_filtrados %>%
+  mutate(
+    lag_1 = lag(tavg, 1),
+    lag_7 = lag(tavg, 7),
+    lag_30 = lag(tavg, 30)
+  )
+
+# Reestructurar los datos para facilitar el uso de facetas
+datos_filtrados_long <- datos_filtrados %>%
+  gather(key = "lag", value = "lag_value", lag_1, lag_7, lag_30) %>%
+  mutate(lag = factor(lag, levels = c("lag_1", "lag_7", "lag_30")))
+
+# Crear la gráfica con ggplot usando facet_wrap
+grafica <- ggplot(datos_filtrados_long, aes(x = lag_value, y = tavg)) +
   geom_point(alpha = 0.3, color = "purple") +
   geom_smooth(method = "lm", se = FALSE, color = "black", size = 0.5) +  # Línea más fina
-  labs(title = "Relación entre temperatura actual y rezago de 1 día",
-       x = "Temperatura rezagada (1 día)", y = "Temperatura actual") +
+  labs(title = "Relación entre temperatura actual y rezago de diferentes días",
+       x = "Temperatura rezagada", y = "Temperatura actual") +
+  facet_wrap(~lag, scales = "free") +  # Crea una subgráfica para cada lag
   theme_minimal()
 
-# Convertir la gráfica ggplot a plotly para hacerla interactiva
-grafica_interactiva <- ggplotly(grafica_interactiva)
-
 # Mostrar la gráfica
-grafica_interactiva
+print(grafica)
 
 ```
+
 
 
 ## Descomposición STL.
