@@ -199,10 +199,11 @@ div.csl-indent {
 <details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="entregable-2.html#cb1-1" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/Temperatura.csv&quot;</span></span>
 <span id="cb1-2"><a href="entregable-2.html#cb1-2" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url)</span>
-<span id="cb1-3"><a href="entregable-2.html#cb1-3" tabindex="-1"></a><span class="fu">str</span>(datos)</span></code></pre></div>
+<span id="cb1-3"><a href="entregable-2.html#cb1-3" tabindex="-1"></a>datos<span class="sc">$</span>time <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(datos<span class="sc">$</span>time)</span>
+<span id="cb1-4"><a href="entregable-2.html#cb1-4" tabindex="-1"></a><span class="fu">str</span>(datos)</span></code></pre></div>
 </details>
 <pre><code>## &#39;data.frame&#39;:    24941 obs. of  11 variables:
-##  $ time: chr  &quot;1941-03-02&quot; &quot;1941-03-12&quot; &quot;1941-03-13&quot; &quot;1941-03-16&quot; ...
+##  $ time: Date, format: &quot;1941-03-02&quot; &quot;1941-03-12&quot; ...
 ##  $ tavg: num  17.1 16.9 19 16.5 17.3 18.1 19.4 19 19.4 17.2 ...
 ##  $ tmin: num  NA NA NA NA NA NA NA NA NA NA ...
 ##  $ tmax: num  NA NA NA NA NA NA NA NA NA NA ...
@@ -213,6 +214,71 @@ div.csl-indent {
 ##  $ wpgt: logi  NA NA NA NA NA NA ...
 ##  $ pres: num  NA NA NA NA NA NA NA NA NA NA ...
 ##  $ tsun: logi  NA NA NA NA NA NA ...</code></pre>
+<p>Filtrar y mirar los datos faltantes por columna.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="entregable-2.html#cb3-1" tabindex="-1"></a>datos_filtrados <span class="ot">&lt;-</span> datos[, <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;tavg&quot;</span>)]</span>
+<span id="cb3-2"><a href="entregable-2.html#cb3-2" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(datos_filtrados)) <span class="sc">/</span> <span class="fu">nrow</span>(datos_filtrados) <span class="sc">*</span> <span class="dv">100</span></span></code></pre></div>
+</details>
+<pre><code>##     time     tavg 
+## 0.000000 1.972655</code></pre>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="entregable-2.html#cb5-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="entregable-2.html#cb5-2" tabindex="-1"></a><span class="fu">ggplot</span>(datos_filtrados, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.Date</span>(time), <span class="at">y =</span> tavg)) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="entregable-2.html#cb5-3" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;steelblue&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="entregable-2.html#cb5-4" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Temperatura promedio en el tiempo&quot;</span>,</span>
+<span id="cb5-5"><a href="entregable-2.html#cb5-5" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Fecha&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Temperatura promedio&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="entregable-2.html#cb5-6" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+</details>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="entregable-2.html#cb6-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+</details>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="entregable-2.html#cb10-1" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span></code></pre></div>
+</details>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     date, intersect, setdiff, union</code></pre>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="entregable-2.html#cb13-1" tabindex="-1"></a>faltantes_por_ano <span class="ot">&lt;-</span> datos_filtrados <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="entregable-2.html#cb13-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">anio =</span> <span class="fu">year</span>(<span class="fu">as.Date</span>(time))) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="entregable-2.html#cb13-3" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="entregable-2.html#cb13-4" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">faltantes =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(tavg)))</span>
+<span id="cb13-5"><a href="entregable-2.html#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="entregable-2.html#cb13-6" tabindex="-1"></a><span class="fu">print</span>(faltantes_por_ano)</span></code></pre></div>
+</details>
+<pre><code>## # A tibble: 72 × 2
+##     anio faltantes
+##    &lt;dbl&gt;     &lt;int&gt;
+##  1  1941         0
+##  2  1942         0
+##  3  1943         0
+##  4  1944         0
+##  5  1945         0
+##  6  1959         0
+##  7  1960         0
+##  8  1961         0
+##  9  1962         0
+## 10  1963         0
+## # ℹ 62 more rows</code></pre>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="entregable-2.html#cb15-1" tabindex="-1"></a><span class="fu">ggplot</span>(faltantes_por_ano, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(anio), <span class="at">y =</span> faltantes)) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="entregable-2.html#cb15-2" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;tomato&quot;</span>) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="entregable-2.html#cb15-3" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Cantidad de valores faltantes por año&quot;</span>,</span>
+<span id="cb15-4"><a href="entregable-2.html#cb15-4" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Año&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Número de NA en temperatura promedio&quot;</span>) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="entregable-2.html#cb15-5" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+</details>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 
 </div>
 </div>

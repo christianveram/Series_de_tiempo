@@ -7,7 +7,48 @@ En este momento deberemos retomar la Unidad 1 en la cual se creó un minilibro q
 ```{r, message=FALSE, warning=FALSE}
 url <- "https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/Temperatura.csv"
 datos <- read.csv(url)
+datos$time <- as.Date(datos$time)
 str(datos)
 
+```
+Filtrar y mirar los datos faltantes por columna.
+
+```{r}
+datos_filtrados <- datos[, c("time", "tavg")]
+colSums(is.na(datos_filtrados)) / nrow(datos_filtrados) * 100
+```
+```{r}
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(datos_filtrados, aes(x = as.Date(time), y = tavg)) +
+  geom_line(color = "steelblue") +
+  labs(title = "Temperatura promedio en el tiempo",
+       x = "Fecha", y = "Temperatura promedio") +
+  theme_minimal()
+```
+
+
+```{r}
+library(dplyr)
+library(lubridate)
+
+faltantes_por_ano <- datos_filtrados %>%
+  mutate(anio = year(as.Date(time))) %>%
+  group_by(anio) %>%
+  summarise(faltantes = sum(is.na(tavg)))
+
+print(faltantes_por_ano)
+```
+
+
+```{r}
+ggplot(faltantes_por_ano, aes(x = factor(anio), y = faltantes)) +
+  geom_col(fill = "tomato") +
+  labs(title = "Cantidad de valores faltantes por año",
+       x = "Año", y = "Número de NA en temperatura promedio") +
+  theme_minimal()
 ```
 

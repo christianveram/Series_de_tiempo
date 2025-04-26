@@ -1,4 +1,7 @@
 introducción
 entregable-2
-descripción-de-los-datos
+descripción-de-los-datos.
+promedios-móviles-sma-de-7-y-30-días
+rezagos-lags-de-1-y-7-días
 section
+descomposición-stl.
