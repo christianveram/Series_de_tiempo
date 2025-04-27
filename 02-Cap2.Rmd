@@ -104,7 +104,7 @@ Un rezago (lag) en series de tiempo consiste en desplazar la serie hacia atrás 
 
 Se generaron tres nuevas variables de rezago (lag_1, lag_7 y lag_30), que corresponden a la temperatura promedio registrada durante esos intervalos de días. La gráfica ilustra la relación entre la temperatura de un día y la del día anterior. Una correlación positiva sugiere la existencia de dependencia temporal en la serie, es decir, que los valores actuales están influenciados por los valores pasados
 
-En esta caso se observa una correlación positiva, lo que indica que la temperatura actual tiende a ser más alta cuando la temperatura en el pasado (ya sea hace 1, 7 o 30 días) también fue más alta. Sin embargo, la fuerza de esta correlación disminuye a medida que aumenta el lapso de tiempo, indicando que la temperatura de días más lejanos en el pasado tiene una menor capacidad predictiva sobre la temperatura del presente en comparación con la temperatura de días más recientes.
+En este caso se observa una correlación positiva, lo que indica que la temperatura actual tiende a ser más alta cuando la temperatura en el pasado (ya sea hace 1, 7 o 30 días) también fue más alta. Sin embargo, la fuerza de esta correlación disminuye a medida que aumenta el lapso de tiempo, indicando que la temperatura de días más lejanos en el pasado tiene una menor capacidad predictiva sobre la temperatura del presente en comparación con la temperatura de días más recientes.
 
 
 ```{r,include=TRUE, message=FALSE, warning=FALSE,fig.align='center'}

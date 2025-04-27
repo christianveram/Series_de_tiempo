@@ -23,4 +23,5 @@ Es por esto que, el análisis y pronóstico del clima permite anticipar y gestio
 
 Finalmente, para este estudio, se analizarán los datos de temperatura media proporcionados por el IDEAM, correspondientes a la estación meteorológica 80222 de la Organización Meteorológica Mundial (WMO), ubicada en el Aeropuerto Internacional El Dorado (SKBO) en Bogotá. Estos datos fueron extraídos mediante la API gratuita de Meteostat en Python. Esta estación representa una fuente confiable y de alta calidad para el monitoreo climático a nivel local, ya que cuenta con registros continuos que permiten complementar el análisis histórico y el modelado climático, proporcionando una perspectiva más precisa del contexto urbano.
 
+
 ------------------------------------------------------------------------
