@@ -1,3 +1,6 @@
 introducción
-capitulo-1
-capitulo-2
+medias-móviles-rezagos-y-descomposición-de-la-serie-temporal
+promedios-móviles-sma-de-7-y-30-días
+rezagos-lags-de-1-7-y-30-días
+descomposición-stl.
+section

@@ -3,6 +3,8 @@ bookdown::gitbook:
   config:
     toc:
       before: |
-        <li><a href="./">Series de tiempo</a></li>
+        <li><a href="./">Series de tiempo.</a></li>
       after: |
         <li><a href="https://github.com/christianveram/Series_de_tiempo/" target="blank">Enlace a Github</a></li>
+    download: ["pdf"]
+  code_folding: hide
