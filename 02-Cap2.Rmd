@@ -135,8 +135,6 @@ grafica <- ggplot(datos_filtrados_long, aes(x = lag_value, y = tavg)) +
 
 # Mostrar la gráfica
 print(grafica)
-
-
 ```
 
 ## Descomposición STL.
