@@ -102,7 +102,7 @@ print(grafica)
 
 Un rezago (lag) en series de tiempo consiste en desplazar la serie hacia atrás en el tiempo para observar cómo los valores pasados afectan a los valores presentes o futuros. El análisis de los rezagos permite identificar autocorrelaciones, que son relaciones importantes para modelar y predecir series temporales.
 
-Se generaron tres nuevas variables de rezago (lag_1, lag_7 y lag_30), que corresponden a la temperatura promedio registrada durante esos intervalos de días. La gráfica ilustra la relación entre la temperatura de un día y la del día anterior. Una correlación positiva sugiere la existencia de dependencia temporal en la serie, es decir, que los valores actuales están influenciados por los valores pasados
+Se generaron tres nuevas variables de rezago (lag_1, lag_7 y lag_30), que corresponden a la temperatura promedio registrada hace 1, 7 y 30 días respectivamente. La gráfica ilustra la relación entre la temperatura de un día y la del día anterior. Una correlación positiva sugiere la existencia de dependencia temporal en la serie, es decir, que los valores actuales están influenciados por los valores pasados
 
 En este caso se observa una correlación positiva, lo que indica que la temperatura actual tiende a ser más alta cuando la temperatura en el pasado (ya sea hace 1, 7 o 30 días) también fue más alta. Sin embargo, la fuerza de esta correlación disminuye a medida que aumenta el lapso de tiempo, indicando que la temperatura de días más lejanos en el pasado tiene una menor capacidad predictiva sobre la temperatura del presente en comparación con la temperatura de días más recientes.
 
@@ -145,7 +145,7 @@ La descomposición STL (Seasonal and Trend decomposition using Loess) es una té
 
 Para analizar la estacionalidad y la tendencia de la serie, se imputaron valores faltantes de la variable tavg mediante interpolación lineal (na.approx). Luego, se transformó la serie en un objeto de tipo ts con frecuencia anual (365 observaciones por año). Se aplicó una descomposición STL (stl) que separa la serie en tendencia, estacionalidad y residuo.
 
-La descomposición STL permite visualizar cómo se estructura la variabilidad de la temperatura promedio en sus componentes principales. La tendencia muestra los cambios a largo plazo en la serie, la estacionalidad revela los patrones cíclicos asociados a las distintas epocas del año, y el residuo indica las fluctuaciones irregulares no explicadas. Este análisis es importante para entender los comportamientos recurrentes y para preparar adecuadamente los datos para modelos de pronóstico.
+La descomposición STL permite visualizar cómo se estructura la variabilidad de la temperatura promedio en sus componentes principales. La tendencia muestra los cambios a largo plazo en la serie, la estacionalidad revela los patrones cíclicos asociados a las distintas épocas del año, y el residuo indica las fluctuaciones irregulares no explicadas. Este análisis es importante para entender los comportamientos recurrentes y para preparar adecuadamente los datos para modelos de pronóstico.
 
 En este caso se puede extraer lo siguiente: 
 
