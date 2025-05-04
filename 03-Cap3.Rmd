@@ -1,1 +1,63 @@
-# .
+# Preprocesamiento y visualización.
+
+## Estacionariedad
+
+Una serie temporal estacionaria es aquella cuyas propiedades no dependen del momento en que se observa .Por lo tanto, las series temporales con tendencias o con estacionalidad no son estacionarias: la tendencia y la estacionalidad afectarán el valor de la serie temporal en diferentes momentos. Una serie temporal estacionaria no presenta patrones predecibles a largo plazo. 
+
+Esto implica que si la serie es estacionaria, estariamos prediciendo que las características estadísticas de nuestra serie de tiempo serán las mismas en el futuro como en el pasado.
+
+Para poder comprobar si la serie es estacionaria se puede utilizar algunos métodos estadísticos, entre los más utilizados se encuentran la prueba de Dickey-Fuller Aumentada (ADF) y la prueba de Kwiatkowski-Phillips-Schmidt-Shin (KPSS). Para nuestro caso usamos las dos pruebas como se muestran a continuación:
+
+
+```{r, include=F, message=FALSE, warning=FALSE}
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+library(lubridate)
+library(zoo)
+library(forecast)
+
+url <- "https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/temperaturas_final.csv"
+datos <- read.csv(url)
+datos$time <- as.Date(datos$time)
+
+datos_filtrados <- datos %>%
+  mutate(fecha = as.Date(time)) %>%
+  arrange(fecha)  %>%
+  filter(fecha >= as.Date("1975-01-01"))
+
+# 'tavg' a dos decimales
+datos_filtrados <- datos_filtrados %>%
+  mutate(tavg = round(tavg, 2))
+```
+
+
+```{r}
+#Prueba de Dicker-Fuller
+#Ho: La serie no presenta estacionariedad
+#Ha: La serie presenta estacionariedad
+library(tseries)
+adf.test(datos_filtrados$tavg)
+```
+
+Con un p valor=0.01 se rechaza la hipotesis nula y esto indica que la serie para la variable de temperatura promedio es estacionaria.
+
+```{r}
+kpss.test(datos_filtrados$tavg)
+```
+
+El valor p es 0,01. Dado que este valor es menor que 0,05, rechazamos la hipótesis nula de la prueba KPSS.
+Esto significa que la serie temporal no es estacionaria en cuanto a tendencia.
+
+## Diferenciación
+
+La diferenciación es una técnica utilizada en el análisis de series temporales para hacer que una serie no estacionaria se vuelva estacionaria. Esto se logra calculando las diferencias entre valores consecutivos de la serie temporal. Así mismo, la diferenciación ayuda a eliminar las tendencias en los datos, haciendo que la serie sea estacionaria. Además, facilita el Modelado ya que al hacer que la serie sea estacionaria, se facilita la aplicación de modelos de series temporales como ARIMA.
+
+```{r}
+#Correlograma de la serie original
+pacf(datos_filtrados$tavg, lag.max=34)
+```
+Figura 3.1 Correlograma de la serie de temperatura promedio de la ciudad de Bogotá DC.
+
+
+En este correlograma, la barra en el lag 1 es bastante alta y significativa, lo que sugiere que hay una fuerte autocorrelación en el primer retardo.Ademá, las barras disminuyen rápidamente después del primer lag, lo que indica que la autocorrelación parcial se reduce considerablemente en los lags posteriores. La mayoría de las barras después del lag 1 están dentro de los intervalos de confianza, lo que sugiere que no hay autocorrelaciones parciales significativas en esos lags.
