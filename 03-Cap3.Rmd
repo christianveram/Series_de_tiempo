@@ -71,7 +71,7 @@ kable(adf_table, align = "c") %>%
 
 ```
 
-Con un p valor=0.01 se rechaza la hipótesis nula y esto indica que la serie para la variable de temperatura promedio es estacionaria, esto indica que sus propiedades estadísticas como la media y la varianza con constantes en el tiempo y no presenta una tendencia sostenida.
+Con un p-valor de 0.01, se rechaza la hipótesis nula de no estacionariedad, lo que indica que la serie de la variable temperatura promedio es estacionaria. Esto implica que sus propiedades estadísticas, como la media y la varianza, se mantienen constantes en el tiempo y que la serie no presenta una tendencia sostenida.
 
 **Prueba KPSS**
 
@@ -105,7 +105,7 @@ kable(kpss_table, align = "c") %>%
 
 ```
 
-El p valor es igual 0,01. Dado que este valor es menor que el nivel de significancia de 0,05, se rechaza la hipótesis nula. Esto indica que la serie temporal no es estacionaria en cuanto a tendencia, lo cual implica que presenta un patrón a lo largo del tiempo, como un aumento en la temperatura progresivo en la temperatura promedio.
+El p-valor es 0.01. Dado que este valor es menor que el nivel de significancia de 0.05, se rechaza la hipótesis nula de estacionariedad. Esto indica que la serie temporal no es estacionaria en nivel, lo cual sugiere que presenta una tendencia sistemática a lo largo del tiempo, como un posible aumento progresivo en la temperatura promedio.
 
 Con base en los resultados de las pruebas realizadas, se puede concluir que la serie es estacionaria en diferencias, según el test ADF, pero no lo es en tendencia, según el test KPSS. Por lo tanto, se recomienda llevar a cabo el proceso de diferenciación para lograr la estacionariedad de la serie.
 
@@ -194,7 +194,7 @@ En este caso, el test KPSS aplicado a la serie diferenciada da un valor p de 0.1
 
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 library(forecast)
-# Establecer el espacio para 4 gráficos (2 filas x 2 columnas)
+
 par(mfrow = c(2, 2), mar = c(5, 5, 3, 1))
 
 # ACF para estacionariedad
@@ -215,20 +215,20 @@ pacf(datos_filtrados$tavg, lag.max = 34, main = "PACF - Serie Original")
 
 A partir de la **Figura 3.1** se puede extraer lo siguiente:
 
-**ACF - Serie Estacionariedad:**
+**ACF - Serie diferenciada:**
 
--   Presenta un pico inicial en el Lag 1 que sobrepasa significativamente el límite de confianza inferior (negativo y relativamente grande), indicando una fuerte autocorrelación negativa en el primer rezago. Esto sugiere que valores altos tienden a ser seguidos por valores bajos y viceversa en períodos consecutivos. Posteriormente, las autocorrelaciones para los rezagos mayores se encuentran dentro de los límites de confianza, lo que sugiere una falta de autocorrelación significativa para esos rezagos.
+Presenta un pico negativo significativo en el Lag 1, lo que indica una autocorrelación negativa inmediata entre los valores consecutivos después de la diferenciación. Los rezagos posteriores se encuentran dentro de los límites de confianza, lo que sugiere ausencia de autocorrelación significativa en los siguientes periodos, lo cual es un indicativo de una serie estacionaria.
 
-**PACF - Serie Estacionariedad:**
+**PACF - Serie diferenciada:**
 
--   Muestra un pico significativo en el Lag 1 (negativo), lo que indica una correlación parcial negativa importante entre una observación y la observación anterior, después de eliminar la influencia de los rezagos intermedios. Los rezagos posteriores no muestran autocorrelaciones parciales significativas, ya que sus barras se mantienen dentro de los límites de confianza.
+Muestra un pico negativo significativo en el Lag 1, mostrando una fuerte correlación parcial negativa con el primer rezago. Las barras de los rezagos posteriores se mantienen dentro de los límites de confianza, indicando que no hay efectos significativos más allá del primer rezago. Esto sugiere que la serie ha alcanzado estabilidad en sus propiedades estadísticas.
 
 **ACF - Serie Original:**
 
--   Exhibe un decaimiento gradual de las autocorrelaciones a medida que aumenta el número de rezagos. Las barras permanecen fuera de los límites de confianza durante varios rezagos, lo que sugiere una autocorrelación positiva significativa que persiste a lo largo del tiempo.
+Se observa una reducción lenta de las autocorrelaciones, con barras que permanecen fuera de los límites de confianza en varios rezagos, lo que indica una dependencia temporal y sugiere visualmente que la serie no es estacionaria. Sin embargo, los resultados del test ADF aplicado a la serie original indican que se puede considerar estacionaria desde el punto de vista estadístico
 
 **PACF - Serie Original:**
 
--   Muestra un pico significativo en el Lag 1 (positivo), indicando una correlación parcial positiva importante con el rezago inmediato anterior. Aunque disminuyen rápidamente, algunos rezagos posteriores podrían mostrar autocorrelaciones parciales ligeramente significativas.
+Presenta un pico significativo en el Lag 1 (positivo), lo que indica una fuerte correlación parcial con el primer rezago. Aunque los valores disminuyen rápidamente, algunos rezagos posteriores muestran ligeras significancias, reforzando la idea de no estacionariedad en la serie original y sugiere la necesidad de aplicar una diferenciación para estabilizarla.
 
 En resumen, el análisis mostró que la serie de temperatura promedio en Bogotá no es estacionaria al inicio debido a una tendencia, pero al aplicar una diferenciación de primer orden se logra estabilizar. Esto es clave para poder aplicar modelos como ARIMA y hacer predicciones más precisas y confiables.
