@@ -32,7 +32,7 @@ datos_filtrados <- datos_filtrados %>%
 ```
 
 
-```{r}
+```{r, warning=FALSE}
 #Prueba de Dicker-Fuller
 #Ho: La serie no presenta estacionariedad
 #Ha: La serie presenta estacionariedad
@@ -42,22 +42,41 @@ adf.test(datos_filtrados$tavg)
 
 Con un p valor=0.01 se rechaza la hipotesis nula y esto indica que la serie para la variable de temperatura promedio es estacionaria.
 
-```{r}
+```{r, warning=FALSE}
+#Ho: La serie es estacionaria
+#Ha: La serie no es estacionaria
 kpss.test(datos_filtrados$tavg)
 ```
 
-El valor p es 0,01. Dado que este valor es menor que 0,05, rechazamos la hipótesis nula de la prueba KPSS.
-Esto significa que la serie temporal no es estacionaria en cuanto a tendencia.
+El  p valor es igual 0,01. Dado que este valor es menor que el nivel de significancia de 0,05, se rechaza la hipótesis nula. Esto indica que la serie temporal no es estacionaria en cuanto a tendencia.
+
+Entonces con las pruebas anteriores se puede concluir que la serie es estacionaria en diferencias (test de ADF) y no en tendencia (test KPSS), por lo que es recomendable realizar el proceso de diferenciación. 
 
 ## Diferenciación
 
 La diferenciación es una técnica utilizada en el análisis de series temporales para hacer que una serie no estacionaria se vuelva estacionaria. Esto se logra calculando las diferencias entre valores consecutivos de la serie temporal. Así mismo, la diferenciación ayuda a eliminar las tendencias en los datos, haciendo que la serie sea estacionaria. Además, facilita el Modelado ya que al hacer que la serie sea estacionaria, se facilita la aplicación de modelos de series temporales como ARIMA.
 
+Para la variable de temperatura promedio se aplicó una diferenciación de primer orden, la cual calcula la diferencia entre cada valor y el anterior.
+
+Posteriormente se realizó nuevamente los test estadísticos de comprobación de la estacionariedad.
+
+```{r, warning=FALSE}
+estacionariedad=diff(datos_filtrados$tavg)
+adf.test(estacionariedad)
+kpss.test(estacionariedad)
+```
+Finalmente, se puede concluir en los dos test estadísticos con un nivel de confianza del 95% que la serie es estacionaria. 
+
 ```{r}
 #Correlograma de la serie original
-pacf(datos_filtrados$tavg, lag.max=34)
+acf(estacionariedad, lag.max=34)
 ```
-Figura 3.1 Correlograma de la serie de temperatura promedio de la ciudad de Bogotá DC.
+
+**Figura 3.1** Correlograma de la serie de temperatura promedio de la ciudad de Bogotá DC.
 
 
-En este correlograma, la barra en el lag 1 es bastante alta y significativa, lo que sugiere que hay una fuerte autocorrelación en el primer retardo.Ademá, las barras disminuyen rápidamente después del primer lag, lo que indica que la autocorrelación parcial se reduce considerablemente en los lags posteriores. La mayoría de las barras después del lag 1 están dentro de los intervalos de confianza, lo que sugiere que no hay autocorrelaciones parciales significativas en esos lags.
+En el correlograma, el Lag 1, hay una barra que sobrepasa significativamente el límite de confianza inferior (es negativa y relativamente grande), lo que indica una autocorrelación negativa significativa en el primer rezago. Indicando que hay una tendencia a que si el valor actual es alto, el valor del período anterior fue bajo o viceversa.
+Posteriormente las barras de los rezagos se encuentran dentro de los límites de confianza. Esto sugiere que no hay una autocorrelación significativa para estos rezagos. La dependencia con valores más lejanos en el pasado parece ser débil.
+
+
+
