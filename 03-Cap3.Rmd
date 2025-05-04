@@ -1,15 +1,17 @@
-# Preprocesamiento y visualización.
+# Estacionariedad
 
-## Estacionariedad
+**Preprocesamiento y visualización**
+Christian Vera, Yuli Deaquiz y Juan Rodríguez
 
-Una serie temporal estacionaria es aquella cuyas propiedades no dependen del momento en que se observa .Por lo tanto, las series temporales con tendencias o con estacionalidad no son estacionarias: la tendencia y la estacionalidad afectarán el valor de la serie temporal en diferentes momentos. Una serie temporal estacionaria no presenta patrones predecibles a largo plazo. 
+04/05/2025
 
-Esto implica que si la serie es estacionaria, estariamos prediciendo que las características estadísticas de nuestra serie de tiempo serán las mismas en el futuro como en el pasado.
+Una serie temporal estacionaria es aquella cuyas propiedades no dependen del momento en que se observa .Por lo tanto, las series temporales con tendencias o con estacionalidad no son estacionarias: la tendencia y la estacionalidad afectarán el valor de la serie temporal en diferentes momentos. Una serie temporal estacionaria no presenta patrones predecibles a largo plazo.
 
-Para poder comprobar si la serie es estacionaria se puede utilizar algunos métodos estadísticos, entre los más utilizados se encuentran la prueba de Dickey-Fuller Aumentada (ADF) y la prueba de Kwiatkowski-Phillips-Schmidt-Shin (KPSS). Para nuestro caso usamos las dos pruebas como se muestran a continuación:
+Esto implica que si la serie es estacionaria, estaríamos prediciendo que las características estadísticas de nuestra serie de tiempo serán las mismas en el futuro como en el pasado.
 
+Para poder comprobar si la serie es estacionaria se puede utilizar algunos métodos estadísticos, entre los más utilizados se encuentran la **prueba de Dickey-Fuller Aumentada (ADF) y la prueba de Kwiatkowski-Phillips-Schmidt-Shin (KPSS**). Para nuestro caso usamos las dos pruebas como se muestran a continuación:
 
-```{r, include=F, message=FALSE, warning=FALSE}
+```{r, include=TRUE, message=FALSE, warning=FALSE}
 library(knitr)
 library(kableExtra)
 library(tidyverse)
@@ -31,52 +33,202 @@ datos_filtrados <- datos_filtrados %>%
   mutate(tavg = round(tavg, 2))
 ```
 
+**Prueba de Dickey-Fuller.**
 
-```{r, warning=FALSE}
-#Prueba de Dicker-Fuller
-#Ho: La serie no presenta estacionariedad
-#Ha: La serie presenta estacionariedad
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# Prueba de Dickey-Fuller
+# Ho: La serie no presenta estacionariedad
+# Ha: La serie presenta estacionariedad
+
+## Prueba de Dickey-Fuller
+
+# Ejecutar la prueba Dickey-Fuller
 library(tseries)
-adf.test(datos_filtrados$tavg)
+library(knitr)
+library(kableExtra)
+
+# Ejecutar la prueba
+adf_result <- adf.test(datos_filtrados$tavg)
+
+# Crear tabla de resultados
+adf_table <- data.frame(
+  "Test Statistic" = round(adf_result$statistic, 4),
+  "Lag Order" = adf_result$parameter,
+  "p-value" = round(adf_result$p.value, 4),
+  "Alternative" = as.character(adf_result$alternative),
+  check.names = FALSE
+)
+
+# Mostrar tabla con kableExtra
+kable(adf_table, align = "c") %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center"
+  )
+
+
+
 ```
 
-Con un p valor=0.01 se rechaza la hipotesis nula y esto indica que la serie para la variable de temperatura promedio es estacionaria.
+Con un p valor=0.01 se rechaza la hipótesis nula y esto indica que la serie para la variable de temperatura promedio es estacionaria, esto indica que sus propiedades estadísticas como la media y la varianza con constantes en el tiempo y no presenta una tendencia sostenida.
 
-```{r, warning=FALSE}
-#Ho: La serie es estacionaria
-#Ha: La serie no es estacionaria
-kpss.test(datos_filtrados$tavg)
+**Prueba KPSS**
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# Prueba KPSS
+# Ho: La serie es estacionaria
+# Ha: La serie no es estacionaria
+
+library(tseries)
+library(knitr)
+library(kableExtra)
+
+kpss_result <- kpss.test(datos_filtrados$tavg)
+
+# Crear tabla de resultados
+kpss_table <- data.frame(
+  "KPSS Statistic" = round(kpss_result$statistic, 3),
+  "Truncation Lag Parameter" = kpss_result$parameter,
+  "p-value" = round(kpss_result$p.value, 4),
+  check.names = FALSE
+)
+
+# Mostrar tabla con numeración automática
+kable(kpss_table, align = "c") %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center"
+  )
+
+
 ```
 
-El  p valor es igual 0,01. Dado que este valor es menor que el nivel de significancia de 0,05, se rechaza la hipótesis nula. Esto indica que la serie temporal no es estacionaria en cuanto a tendencia.
+El p valor es igual 0,01. Dado que este valor es menor que el nivel de significancia de 0,05, se rechaza la hipótesis nula. Esto indica que la serie temporal no es estacionaria en cuanto a tendencia, lo cual implica que presenta un patrón a lo largo del tiempo, como un aumento en la temperatura progresivo en la temperatura promedio.
 
-Entonces con las pruebas anteriores se puede concluir que la serie es estacionaria en diferencias (test de ADF) y no en tendencia (test KPSS), por lo que es recomendable realizar el proceso de diferenciación. 
+Con base en los resultados de las pruebas realizadas, se puede concluir que la serie es estacionaria en diferencias, según el test ADF, pero no lo es en tendencia, según el test KPSS. Por lo tanto, se recomienda llevar a cabo el proceso de diferenciación para lograr la estacionariedad de la serie.
 
 ## Diferenciación
 
-La diferenciación es una técnica utilizada en el análisis de series temporales para hacer que una serie no estacionaria se vuelva estacionaria. Esto se logra calculando las diferencias entre valores consecutivos de la serie temporal. Así mismo, la diferenciación ayuda a eliminar las tendencias en los datos, haciendo que la serie sea estacionaria. Además, facilita el Modelado ya que al hacer que la serie sea estacionaria, se facilita la aplicación de modelos de series temporales como ARIMA.
+La diferenciación es una técnica utilizada en el análisis de series temporales para hacer que una serie no estacionaria se vuelva estacionaria. Esto se logra calculando las diferencias entre valores consecutivos de la serie temporal. Así mismo, ayuda a eliminar las tendencias en los datos, haciendo que la serie sea estacionaria. Además, facilita el Modelado ya que al hacer que la serie sea estacionaria, se facilita la aplicación de modelos de series temporales como ARIMA.
 
-Para la variable de temperatura promedio se aplicó una diferenciación de primer orden, la cual calcula la diferencia entre cada valor y el anterior.
+Para la variable de temperatura promedio se aplicó una diferenciación de primer orden, la cual calcula la diferencia entre cada valor y el anterior en la serie temporal.
 
 Posteriormente se realizó nuevamente los test estadísticos de comprobación de la estacionariedad.
 
-```{r, warning=FALSE}
+**Dickey-Fuller Test (Diferenciación)**
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+
+# Prueba de Dickey-Fuller
+# Ho: La serie no presenta estacionariedad
+# Ha: La serie presenta estacionariedad
+
+## Prueba de Dickey-Fuller
+
 estacionariedad=diff(datos_filtrados$tavg)
-adf.test(estacionariedad)
-kpss.test(estacionariedad)
+#adf.test(estacionariedad)
+
+# Ejecutar la prueba Dickey-Fuller
+library(tseries)
+library(knitr)
+library(kableExtra)
+
+# Ejecutar la prueba
+adf_result1 <- adf.test(estacionariedad)
+
+# Crear tabla de resultados
+adf_table <- data.frame(
+  "Test Statistic" = round(adf_result1$statistic, 4),
+  "Lag Order" = adf_result1$parameter,
+  "p-value" = round(adf_result1$p.value, 4),
+  "Alternative" = as.character(adf_result1$alternative),
+  check.names = FALSE
+)
+
+# Mostrar tabla 
+kable(adf_table, align = "c") %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center")
+
 ```
-Finalmente, se puede concluir en los dos test estadísticos con un nivel de confianza del 95% que la serie es estacionaria. 
 
-```{r}
-#Correlograma de la serie original
-acf(estacionariedad, lag.max=34)
+En este caso el valor p de 0.01 indica que se puede rechazar la hipótesis nula de que la serie no es estacionaria, siendo menor al umbral de significancia 0.05.
+
+**KPSS Test (Diferenciación).**
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+
+# Prueba KPSS
+# Ho: La serie es estacionaria
+# Ha: La serie no es estacionaria
+#kpss.test(estacionariedad)
+
+library(tseries)
+library(knitr)
+library(kableExtra)
+
+kpss_result2 <- kpss.test(estacionariedad)
+
+# Crear tabla de resultados
+kpss_table <- data.frame(
+  "KPSS Statistic" = round(kpss_result2$statistic, 3),
+  "Truncation Lag Parameter" = kpss_result2$parameter,
+  "p-value" = round(kpss_result2$p.value, 4),
+  check.names = FALSE)
+
+# Mostrar tabla
+kable(kpss_table, align = "c") %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center")
+
+
 ```
 
-**Figura 3.1** Correlograma de la serie de temperatura promedio de la ciudad de Bogotá DC.
+En este caso, el test KPSS aplicado a la serie diferenciada da un valor p de 0.1, lo que sugiere que no hay suficiente evidencia para rechazar la hipótesis nula de estacionariedad en el nivel, indicando que la serie es estacionaria después de la diferenciación. En comparación con el test anterior, donde el valor p era 0.01, que indicaba que la serie no era estacionaria, esta diferencia sugiere que la diferenciación eliminó la tendencia y permitió que la serie se volviera estacionaria. Finalmente, se puede concluir en los dos test estadísticos con un nivel de confianza del 95% que la serie es estacionaria luego de aplicar la diferenciación.
 
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+library(forecast)
+# Establecer el espacio para 4 gráficos (2 filas x 2 columnas)
+par(mfrow = c(2, 2), mar = c(5, 5, 3, 1))
 
-En el correlograma, el Lag 1, hay una barra que sobrepasa significativamente el límite de confianza inferior (es negativa y relativamente grande), lo que indica una autocorrelación negativa significativa en el primer rezago. Indicando que hay una tendencia a que si el valor actual es alto, el valor del período anterior fue bajo o viceversa.
-Posteriormente las barras de los rezagos se encuentran dentro de los límites de confianza. Esto sugiere que no hay una autocorrelación significativa para estos rezagos. La dependencia con valores más lejanos en el pasado parece ser débil.
+# ACF para estacionariedad
+acf(estacionariedad, lag.max = 34, main = "ACF - Serie diferenciada")
 
+# PACF para estacionariedad
+pacf(estacionariedad, lag.max = 34, main = "PACF - Serie diferenciada")
 
+# ACF para datos_filtrados$tavg
+acf(datos_filtrados$tavg, lag.max = 34, main = "ACF - Serie Original")
 
+# PACF para datos_filtrados$tavg
+pacf(datos_filtrados$tavg, lag.max = 34, main = "PACF - Serie Original")
+
+```
+
+**Figura 3.1** Análisis de Autocorrelación (ACF y PACF) de la serie de temperatura promedio de la ciudad de Bogotá DC.
+
+A partir de la **Figura 3.1** se puede extraer lo siguiente:
+
+**ACF - Serie Estacionariedad:**
+
+-   Presenta un pico inicial en el Lag 1 que sobrepasa significativamente el límite de confianza inferior (negativo y relativamente grande), indicando una fuerte autocorrelación negativa en el primer rezago. Esto sugiere que valores altos tienden a ser seguidos por valores bajos y viceversa en períodos consecutivos. Posteriormente, las autocorrelaciones para los rezagos mayores se encuentran dentro de los límites de confianza, lo que sugiere una falta de autocorrelación significativa para esos rezagos.
+
+**PACF - Serie Estacionariedad:**
+
+-   Muestra un pico significativo en el Lag 1 (negativo), lo que indica una correlación parcial negativa importante entre una observación y la observación anterior, después de eliminar la influencia de los rezagos intermedios. Los rezagos posteriores no muestran autocorrelaciones parciales significativas, ya que sus barras se mantienen dentro de los límites de confianza.
+
+**ACF - Serie Original:**
+
+-   Exhibe un decaimiento gradual de las autocorrelaciones a medida que aumenta el número de rezagos. Las barras permanecen fuera de los límites de confianza durante varios rezagos, lo que sugiere una autocorrelación positiva significativa que persiste a lo largo del tiempo.
+
+**PACF - Serie Original:**
+
+-   Muestra un pico significativo en el Lag 1 (positivo), indicando una correlación parcial positiva importante con el rezago inmediato anterior. Aunque disminuyen rápidamente, algunos rezagos posteriores podrían mostrar autocorrelaciones parciales ligeramente significativas.
+
+En resumen, el análisis mostró que la serie de temperatura promedio en Bogotá no es estacionaria al inicio debido a una tendencia, pero al aplicar una diferenciación de primer orden se logra estabilizar. Esto es clave para poder aplicar modelos como ARIMA y hacer predicciones más precisas y confiables.

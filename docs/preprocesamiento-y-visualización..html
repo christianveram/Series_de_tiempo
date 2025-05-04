@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Capítulo: 3 Preprocesamiento y visualización. | Temperatura histórica en la ciudad de Bogotá.</title>
+  <meta name="description" content="Capítulo: 3 Preprocesamiento y visualización. | Temperatura histórica en la ciudad de Bogotá." />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Capítulo: 3 Preprocesamiento y visualización. | Temperatura histórica en la ciudad de Bogotá." />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Capítulo: 3 Preprocesamiento y visualización. | Temperatura histórica en la ciudad de Bogotá." />
+  
+  
+  
+
+<meta name="author" content="Christian Vera, Yuli Deaquiz y Juan Rodríguez" />
+
+
+<meta name="date" content="2025-12-04" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"/>
+<link rel="next" href="referencias.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/codefolding-lua-1.1/codefolding-lua.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Series de tiempo.</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introducción</a></li>
+<li class="chapter" data-level="2" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><i class="fa fa-check"></i><b>2</b> Medias Móviles, Rezagos y Descomposición de la Serie Temporal</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html#promedios-móviles-sma-de-7-y-30-días"><i class="fa fa-check"></i><b>2.1</b> Promedios móviles (SMA de 7 y 30 días)</a></li>
+<li class="chapter" data-level="2.2" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html#rezagos-lags-de-1-7-y-30-días"><i class="fa fa-check"></i><b>2.2</b> Rezagos (lags de 1, 7 y 30 días)</a></li>
+<li class="chapter" data-level="2.3" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html#descomposición-stl."><i class="fa fa-check"></i><b>2.3</b> Descomposición STL.</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="preprocesamiento-y-visualización..html"><a href="preprocesamiento-y-visualización..html"><i class="fa fa-check"></i><b>3</b> Preprocesamiento y visualización.</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="preprocesamiento-y-visualización..html"><a href="preprocesamiento-y-visualización..html#estacionariedad"><i class="fa fa-check"></i><b>3.1</b> Estacionariedad</a></li>
+<li class="chapter" data-level="3.2" data-path="preprocesamiento-y-visualización..html"><a href="preprocesamiento-y-visualización..html#diferenciación"><i class="fa fa-check"></i><b>3.2</b> Diferenciación</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/christianveram/Series_de_tiempo/" target="blank">Enlace a Github</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Temperatura histórica en la ciudad de Bogotá.</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="preprocesamiento-y-visualización." class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">Capítulo: 3</span> Preprocesamiento y visualización.<a href="preprocesamiento-y-visualización..html#preprocesamiento-y-visualización." class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="estacionariedad" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Estacionariedad<a href="preprocesamiento-y-visualización..html#estacionariedad" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Una serie temporal estacionaria es aquella cuyas propiedades no dependen del momento en que se observa .Por lo tanto, las series temporales con tendencias o con estacionalidad no son estacionarias: la tendencia y la estacionalidad afectarán el valor de la serie temporal en diferentes momentos. Una serie temporal estacionaria no presenta patrones predecibles a largo plazo.</p>
+<p>Esto implica que si la serie es estacionaria, estaríamos prediciendo que las características estadísticas de nuestra serie de tiempo serán las mismas en el futuro como en el pasado.</p>
+<p>Para poder comprobar si la serie es estacionaria se puede utilizar algunos métodos estadísticos, entre los más utilizados se encuentran la <strong>prueba de Dickey-Fuller Aumentada (ADF) y la prueba de Kwiatkowski-Phillips-Schmidt-Shin (KPSS</strong>). Para nuestro caso usamos las dos pruebas como se muestran a continuación:</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="preprocesamiento-y-visualización..html#cb1-1" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-2"><a href="preprocesamiento-y-visualización..html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb1-3"><a href="preprocesamiento-y-visualización..html#cb1-3" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="preprocesamiento-y-visualización..html#cb1-4" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-5"><a href="preprocesamiento-y-visualización..html#cb1-5" tabindex="-1"></a><span class="fu">library</span>(zoo)</span>
+<span id="cb1-6"><a href="preprocesamiento-y-visualización..html#cb1-6" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb1-7"><a href="preprocesamiento-y-visualización..html#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="preprocesamiento-y-visualización..html#cb1-8" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/temperaturas_final.csv&quot;</span></span>
+<span id="cb1-9"><a href="preprocesamiento-y-visualización..html#cb1-9" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url)</span>
+<span id="cb1-10"><a href="preprocesamiento-y-visualización..html#cb1-10" tabindex="-1"></a>datos<span class="sc">$</span>time <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(datos<span class="sc">$</span>time)</span>
+<span id="cb1-11"><a href="preprocesamiento-y-visualización..html#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="preprocesamiento-y-visualización..html#cb1-12" tabindex="-1"></a>datos_filtrados <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
+<span id="cb1-13"><a href="preprocesamiento-y-visualización..html#cb1-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fecha =</span> <span class="fu">as.Date</span>(time)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-14"><a href="preprocesamiento-y-visualización..html#cb1-14" tabindex="-1"></a>  <span class="fu">arrange</span>(fecha)  <span class="sc">%&gt;%</span></span>
+<span id="cb1-15"><a href="preprocesamiento-y-visualización..html#cb1-15" tabindex="-1"></a>  <span class="fu">filter</span>(fecha <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;1975-01-01&quot;</span>))</span>
+<span id="cb1-16"><a href="preprocesamiento-y-visualización..html#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="preprocesamiento-y-visualización..html#cb1-17" tabindex="-1"></a><span class="co"># &#39;tavg&#39; a dos decimales</span></span>
+<span id="cb1-18"><a href="preprocesamiento-y-visualización..html#cb1-18" tabindex="-1"></a>datos_filtrados <span class="ot">&lt;-</span> datos_filtrados <span class="sc">%&gt;%</span></span>
+<span id="cb1-19"><a href="preprocesamiento-y-visualización..html#cb1-19" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">tavg =</span> <span class="fu">round</span>(tavg, <span class="dv">2</span>))</span></code></pre></div>
+</details>
+<p><strong>Prueba de Dickey-Fuller.</strong></p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="preprocesamiento-y-visualización..html#cb2-1" tabindex="-1"></a><span class="co"># Prueba de Dickey-Fuller</span></span>
+<span id="cb2-2"><a href="preprocesamiento-y-visualización..html#cb2-2" tabindex="-1"></a><span class="co"># Ho: La serie no presenta estacionariedad</span></span>
+<span id="cb2-3"><a href="preprocesamiento-y-visualización..html#cb2-3" tabindex="-1"></a><span class="co"># Ha: La serie presenta estacionariedad</span></span>
+<span id="cb2-4"><a href="preprocesamiento-y-visualización..html#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="preprocesamiento-y-visualización..html#cb2-5" tabindex="-1"></a><span class="do">## Prueba de Dickey-Fuller</span></span>
+<span id="cb2-6"><a href="preprocesamiento-y-visualización..html#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="preprocesamiento-y-visualización..html#cb2-7" tabindex="-1"></a><span class="co"># Ejecutar la prueba Dickey-Fuller</span></span>
+<span id="cb2-8"><a href="preprocesamiento-y-visualización..html#cb2-8" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb2-9"><a href="preprocesamiento-y-visualización..html#cb2-9" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb2-10"><a href="preprocesamiento-y-visualización..html#cb2-10" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb2-11"><a href="preprocesamiento-y-visualización..html#cb2-11" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="preprocesamiento-y-visualización..html#cb2-12" tabindex="-1"></a><span class="co"># Ejecutar la prueba</span></span>
+<span id="cb2-13"><a href="preprocesamiento-y-visualización..html#cb2-13" tabindex="-1"></a>adf_result <span class="ot">&lt;-</span> <span class="fu">adf.test</span>(datos_filtrados<span class="sc">$</span>tavg)</span>
+<span id="cb2-14"><a href="preprocesamiento-y-visualización..html#cb2-14" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="preprocesamiento-y-visualización..html#cb2-15" tabindex="-1"></a><span class="co"># Crear tabla de resultados</span></span>
+<span id="cb2-16"><a href="preprocesamiento-y-visualización..html#cb2-16" tabindex="-1"></a>adf_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-17"><a href="preprocesamiento-y-visualización..html#cb2-17" tabindex="-1"></a>  <span class="st">&quot;Test Statistic&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(adf_result<span class="sc">$</span>statistic, <span class="dv">4</span>),</span>
+<span id="cb2-18"><a href="preprocesamiento-y-visualización..html#cb2-18" tabindex="-1"></a>  <span class="st">&quot;Lag Order&quot;</span> <span class="ot">=</span> adf_result<span class="sc">$</span>parameter,</span>
+<span id="cb2-19"><a href="preprocesamiento-y-visualización..html#cb2-19" tabindex="-1"></a>  <span class="st">&quot;p-value&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(adf_result<span class="sc">$</span>p.value, <span class="dv">4</span>),</span>
+<span id="cb2-20"><a href="preprocesamiento-y-visualización..html#cb2-20" tabindex="-1"></a>  <span class="st">&quot;Alternative&quot;</span> <span class="ot">=</span> <span class="fu">as.character</span>(adf_result<span class="sc">$</span>alternative),</span>
+<span id="cb2-21"><a href="preprocesamiento-y-visualización..html#cb2-21" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-22"><a href="preprocesamiento-y-visualización..html#cb2-22" tabindex="-1"></a>)</span>
+<span id="cb2-23"><a href="preprocesamiento-y-visualización..html#cb2-23" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="preprocesamiento-y-visualización..html#cb2-24" tabindex="-1"></a><span class="co"># Mostrar tabla con kableExtra</span></span>
+<span id="cb2-25"><a href="preprocesamiento-y-visualización..html#cb2-25" tabindex="-1"></a><span class="fu">kable</span>(adf_table, <span class="at">align =</span> <span class="st">&quot;c&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-26"><a href="preprocesamiento-y-visualización..html#cb2-26" tabindex="-1"></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb2-27"><a href="preprocesamiento-y-visualización..html#cb2-27" tabindex="-1"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>, <span class="st">&quot;responsive&quot;</span>),</span>
+<span id="cb2-28"><a href="preprocesamiento-y-visualización..html#cb2-28" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-29"><a href="preprocesamiento-y-visualización..html#cb2-29" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">&quot;center&quot;</span></span>
+<span id="cb2-30"><a href="preprocesamiento-y-visualización..html#cb2-30" tabindex="-1"></a>  )</span></code></pre></div>
+</details>
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:center;">
+Test Statistic
+</th>
+<th style="text-align:center;">
+Lag Order
+</th>
+<th style="text-align:center;">
+p-value
+</th>
+<th style="text-align:center;">
+Alternative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Dickey-Fuller
+</td>
+<td style="text-align:center;">
+-14.5464
+</td>
+<td style="text-align:center;">
+26
+</td>
+<td style="text-align:center;">
+0.01
+</td>
+<td style="text-align:center;">
+stationary
+</td>
+</tr>
+</tbody>
+</table>
+<p>Con un p valor=0.01 se rechaza la hipótesis nula y esto indica que la serie para la variable de temperatura promedio es estacionaria.</p>
+<p><strong>Prueba KPSS</strong></p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="preprocesamiento-y-visualización..html#cb3-1" tabindex="-1"></a><span class="co"># Prueba KPSS</span></span>
+<span id="cb3-2"><a href="preprocesamiento-y-visualización..html#cb3-2" tabindex="-1"></a><span class="co"># Ho: La serie es estacionaria</span></span>
+<span id="cb3-3"><a href="preprocesamiento-y-visualización..html#cb3-3" tabindex="-1"></a><span class="co"># Ha: La serie no es estacionaria</span></span>
+<span id="cb3-4"><a href="preprocesamiento-y-visualización..html#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="preprocesamiento-y-visualización..html#cb3-5" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb3-6"><a href="preprocesamiento-y-visualización..html#cb3-6" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb3-7"><a href="preprocesamiento-y-visualización..html#cb3-7" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb3-8"><a href="preprocesamiento-y-visualización..html#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="preprocesamiento-y-visualización..html#cb3-9" tabindex="-1"></a>kpss_result <span class="ot">&lt;-</span> <span class="fu">kpss.test</span>(datos_filtrados<span class="sc">$</span>tavg)</span>
+<span id="cb3-10"><a href="preprocesamiento-y-visualización..html#cb3-10" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="preprocesamiento-y-visualización..html#cb3-11" tabindex="-1"></a><span class="co"># Crear tabla de resultados</span></span>
+<span id="cb3-12"><a href="preprocesamiento-y-visualización..html#cb3-12" tabindex="-1"></a>kpss_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-13"><a href="preprocesamiento-y-visualización..html#cb3-13" tabindex="-1"></a>  <span class="st">&quot;KPSS Statistic&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(kpss_result<span class="sc">$</span>statistic, <span class="dv">3</span>),</span>
+<span id="cb3-14"><a href="preprocesamiento-y-visualización..html#cb3-14" tabindex="-1"></a>  <span class="st">&quot;Truncation Lag Parameter&quot;</span> <span class="ot">=</span> kpss_result<span class="sc">$</span>parameter,</span>
+<span id="cb3-15"><a href="preprocesamiento-y-visualización..html#cb3-15" tabindex="-1"></a>  <span class="st">&quot;p-value&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(kpss_result<span class="sc">$</span>p.value, <span class="dv">4</span>),</span>
+<span id="cb3-16"><a href="preprocesamiento-y-visualización..html#cb3-16" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-17"><a href="preprocesamiento-y-visualización..html#cb3-17" tabindex="-1"></a>)</span>
+<span id="cb3-18"><a href="preprocesamiento-y-visualización..html#cb3-18" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="preprocesamiento-y-visualización..html#cb3-19" tabindex="-1"></a><span class="co"># Mostrar tabla con numeración automática</span></span>
+<span id="cb3-20"><a href="preprocesamiento-y-visualización..html#cb3-20" tabindex="-1"></a><span class="fu">kable</span>(kpss_table, <span class="at">align =</span> <span class="st">&quot;c&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-21"><a href="preprocesamiento-y-visualización..html#cb3-21" tabindex="-1"></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb3-22"><a href="preprocesamiento-y-visualización..html#cb3-22" tabindex="-1"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>, <span class="st">&quot;responsive&quot;</span>),</span>
+<span id="cb3-23"><a href="preprocesamiento-y-visualización..html#cb3-23" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-24"><a href="preprocesamiento-y-visualización..html#cb3-24" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">&quot;center&quot;</span></span>
+<span id="cb3-25"><a href="preprocesamiento-y-visualización..html#cb3-25" tabindex="-1"></a>  )</span></code></pre></div>
+</details>
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:center;">
+KPSS Statistic
+</th>
+<th style="text-align:center;">
+Truncation Lag Parameter
+</th>
+<th style="text-align:center;">
+p-value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+KPSS Level
+</td>
+<td style="text-align:center;">
+34.079
+</td>
+<td style="text-align:center;">
+14
+</td>
+<td style="text-align:center;">
+0.01
+</td>
+</tr>
+</tbody>
+</table>
+<p>El p valor es igual 0,01. Dado que este valor es menor que el nivel de significancia de 0,05, se rechaza la hipótesis nula. Esto indica que la serie temporal no es estacionaria en cuanto a tendencia.</p>
+<p>Con base en los resultados de las pruebas realizadas, se puede concluir que la serie es estacionaria en diferencias, según el test ADF, pero no lo es en tendencia, según el test KPSS. Por lo tanto, se recomienda llevar a cabo el proceso de diferenciación para lograr la estacionariedad de la serie.</p>
+</div>
+<div id="diferenciación" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Diferenciación<a href="preprocesamiento-y-visualización..html#diferenciación" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>La diferenciación es una técnica utilizada en el análisis de series temporales para hacer que una serie no estacionaria se vuelva estacionaria. Esto se logra calculando las diferencias entre valores consecutivos de la serie temporal. Así mismo, la diferenciación ayuda a eliminar las tendencias en los datos, haciendo que la serie sea estacionaria. Además, facilita el Modelado ya que al hacer que la serie sea estacionaria, se facilita la aplicación de modelos de series temporales como ARIMA.</p>
+<p>Para la variable de temperatura promedio se aplicó una diferenciación de primer orden, la cual calcula la diferencia entre cada valor y el anterior.</p>
+<p>Posteriormente se realizó nuevamente los test estadísticos de comprobación de la estacionariedad.</p>
+<p><strong>Dickey-Fuller Test (Diferenciación)</strong></p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="preprocesamiento-y-visualización..html#cb4-1" tabindex="-1"></a><span class="co"># Prueba de Dickey-Fuller</span></span>
+<span id="cb4-2"><a href="preprocesamiento-y-visualización..html#cb4-2" tabindex="-1"></a><span class="co"># Ho: La serie no presenta estacionariedad</span></span>
+<span id="cb4-3"><a href="preprocesamiento-y-visualización..html#cb4-3" tabindex="-1"></a><span class="co"># Ha: La serie presenta estacionariedad</span></span>
+<span id="cb4-4"><a href="preprocesamiento-y-visualización..html#cb4-4" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="preprocesamiento-y-visualización..html#cb4-5" tabindex="-1"></a><span class="do">## Prueba de Dickey-Fuller</span></span>
+<span id="cb4-6"><a href="preprocesamiento-y-visualización..html#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="preprocesamiento-y-visualización..html#cb4-7" tabindex="-1"></a>estacionariedad<span class="ot">=</span><span class="fu">diff</span>(datos_filtrados<span class="sc">$</span>tavg)</span>
+<span id="cb4-8"><a href="preprocesamiento-y-visualización..html#cb4-8" tabindex="-1"></a><span class="co">#adf.test(estacionariedad)</span></span>
+<span id="cb4-9"><a href="preprocesamiento-y-visualización..html#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="preprocesamiento-y-visualización..html#cb4-10" tabindex="-1"></a><span class="co"># Ejecutar la prueba Dickey-Fuller</span></span>
+<span id="cb4-11"><a href="preprocesamiento-y-visualización..html#cb4-11" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb4-12"><a href="preprocesamiento-y-visualización..html#cb4-12" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb4-13"><a href="preprocesamiento-y-visualización..html#cb4-13" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb4-14"><a href="preprocesamiento-y-visualización..html#cb4-14" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="preprocesamiento-y-visualización..html#cb4-15" tabindex="-1"></a><span class="co"># Ejecutar la prueba</span></span>
+<span id="cb4-16"><a href="preprocesamiento-y-visualización..html#cb4-16" tabindex="-1"></a>adf_result1 <span class="ot">&lt;-</span> <span class="fu">adf.test</span>(estacionariedad)</span>
+<span id="cb4-17"><a href="preprocesamiento-y-visualización..html#cb4-17" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="preprocesamiento-y-visualización..html#cb4-18" tabindex="-1"></a><span class="co"># Crear tabla de resultados</span></span>
+<span id="cb4-19"><a href="preprocesamiento-y-visualización..html#cb4-19" tabindex="-1"></a>adf_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-20"><a href="preprocesamiento-y-visualización..html#cb4-20" tabindex="-1"></a>  <span class="st">&quot;Test Statistic&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(adf_result1<span class="sc">$</span>statistic, <span class="dv">4</span>),</span>
+<span id="cb4-21"><a href="preprocesamiento-y-visualización..html#cb4-21" tabindex="-1"></a>  <span class="st">&quot;Lag Order&quot;</span> <span class="ot">=</span> adf_result1<span class="sc">$</span>parameter,</span>
+<span id="cb4-22"><a href="preprocesamiento-y-visualización..html#cb4-22" tabindex="-1"></a>  <span class="st">&quot;p-value&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(adf_result1<span class="sc">$</span>p.value, <span class="dv">4</span>),</span>
+<span id="cb4-23"><a href="preprocesamiento-y-visualización..html#cb4-23" tabindex="-1"></a>  <span class="st">&quot;Alternative&quot;</span> <span class="ot">=</span> <span class="fu">as.character</span>(adf_result1<span class="sc">$</span>alternative),</span>
+<span id="cb4-24"><a href="preprocesamiento-y-visualización..html#cb4-24" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-25"><a href="preprocesamiento-y-visualización..html#cb4-25" tabindex="-1"></a>)</span>
+<span id="cb4-26"><a href="preprocesamiento-y-visualización..html#cb4-26" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="preprocesamiento-y-visualización..html#cb4-27" tabindex="-1"></a><span class="co"># Mostrar tabla </span></span>
+<span id="cb4-28"><a href="preprocesamiento-y-visualización..html#cb4-28" tabindex="-1"></a><span class="fu">kable</span>(adf_table, <span class="at">align =</span> <span class="st">&quot;c&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-29"><a href="preprocesamiento-y-visualización..html#cb4-29" tabindex="-1"></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb4-30"><a href="preprocesamiento-y-visualización..html#cb4-30" tabindex="-1"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>, <span class="st">&quot;responsive&quot;</span>),</span>
+<span id="cb4-31"><a href="preprocesamiento-y-visualización..html#cb4-31" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-32"><a href="preprocesamiento-y-visualización..html#cb4-32" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">&quot;center&quot;</span>)</span></code></pre></div>
+</details>
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:center;">
+Test Statistic
+</th>
+<th style="text-align:center;">
+Lag Order
+</th>
+<th style="text-align:center;">
+p-value
+</th>
+<th style="text-align:center;">
+Alternative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Dickey-Fuller
+</td>
+<td style="text-align:center;">
+-40.1841
+</td>
+<td style="text-align:center;">
+26
+</td>
+<td style="text-align:center;">
+0.01
+</td>
+<td style="text-align:center;">
+stationary
+</td>
+</tr>
+</tbody>
+</table>
+<p>En este caso el valor p de 0.01 indica que se puede rechazar la hipótesis nula de que la serie no es estacionaria, siendo menor al umbral de significancia 0.05.</p>
+<p><strong>KPSS Test (Diferenciación).</strong></p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="preprocesamiento-y-visualización..html#cb5-1" tabindex="-1"></a><span class="co"># Prueba KPSS</span></span>
+<span id="cb5-2"><a href="preprocesamiento-y-visualización..html#cb5-2" tabindex="-1"></a><span class="co"># Ho: La serie es estacionaria</span></span>
+<span id="cb5-3"><a href="preprocesamiento-y-visualización..html#cb5-3" tabindex="-1"></a><span class="co"># Ha: La serie no es estacionaria</span></span>
+<span id="cb5-4"><a href="preprocesamiento-y-visualización..html#cb5-4" tabindex="-1"></a><span class="co">#kpss.test(estacionariedad)</span></span>
+<span id="cb5-5"><a href="preprocesamiento-y-visualización..html#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="preprocesamiento-y-visualización..html#cb5-6" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb5-7"><a href="preprocesamiento-y-visualización..html#cb5-7" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb5-8"><a href="preprocesamiento-y-visualización..html#cb5-8" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb5-9"><a href="preprocesamiento-y-visualización..html#cb5-9" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="preprocesamiento-y-visualización..html#cb5-10" tabindex="-1"></a>kpss_result2 <span class="ot">&lt;-</span> <span class="fu">kpss.test</span>(estacionariedad)</span>
+<span id="cb5-11"><a href="preprocesamiento-y-visualización..html#cb5-11" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="preprocesamiento-y-visualización..html#cb5-12" tabindex="-1"></a><span class="co"># Crear tabla de resultados</span></span>
+<span id="cb5-13"><a href="preprocesamiento-y-visualización..html#cb5-13" tabindex="-1"></a>kpss_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-14"><a href="preprocesamiento-y-visualización..html#cb5-14" tabindex="-1"></a>  <span class="st">&quot;KPSS Statistic&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(kpss_result2<span class="sc">$</span>statistic, <span class="dv">3</span>),</span>
+<span id="cb5-15"><a href="preprocesamiento-y-visualización..html#cb5-15" tabindex="-1"></a>  <span class="st">&quot;Truncation Lag Parameter&quot;</span> <span class="ot">=</span> kpss_result2<span class="sc">$</span>parameter,</span>
+<span id="cb5-16"><a href="preprocesamiento-y-visualización..html#cb5-16" tabindex="-1"></a>  <span class="st">&quot;p-value&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(kpss_result2<span class="sc">$</span>p.value, <span class="dv">4</span>),</span>
+<span id="cb5-17"><a href="preprocesamiento-y-visualización..html#cb5-17" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-18"><a href="preprocesamiento-y-visualización..html#cb5-18" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="preprocesamiento-y-visualización..html#cb5-19" tabindex="-1"></a><span class="co"># Mostrar tabla</span></span>
+<span id="cb5-20"><a href="preprocesamiento-y-visualización..html#cb5-20" tabindex="-1"></a><span class="fu">kable</span>(kpss_table, <span class="at">align =</span> <span class="st">&quot;c&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-21"><a href="preprocesamiento-y-visualización..html#cb5-21" tabindex="-1"></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb5-22"><a href="preprocesamiento-y-visualización..html#cb5-22" tabindex="-1"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>, <span class="st">&quot;responsive&quot;</span>),</span>
+<span id="cb5-23"><a href="preprocesamiento-y-visualización..html#cb5-23" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-24"><a href="preprocesamiento-y-visualización..html#cb5-24" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">&quot;center&quot;</span>)</span></code></pre></div>
+</details>
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:center;">
+KPSS Statistic
+</th>
+<th style="text-align:center;">
+Truncation Lag Parameter
+</th>
+<th style="text-align:center;">
+p-value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+KPSS Level
+</td>
+<td style="text-align:center;">
+0.001
+</td>
+<td style="text-align:center;">
+14
+</td>
+<td style="text-align:center;">
+0.1
+</td>
+</tr>
+</tbody>
+</table>
+<p>A diferencia del caso anterior, se observa que el valor p es mayor que 0.05, con lo cual no se rechaza la hipótesis nula de que la serie es estacionaria. En este caso, el test KPSS aplicado a la serie diferenciada da un valor p de 0.1, lo que sugiere que no hay suficiente evidencia para rechazar la hipótesis nula de estacionariedad en el nivel, indicando que la serie es estacionaria después de la diferenciación. En comparación con el test anterior, donde el valor p era 0.01, que indicaba que la serie no era estacionaria en el nivel, esta diferencia sugiere que la diferenciación eliminó la tendencia y permitió que la serie se volviera estacionaria. Finalmente, se puede concluir en los dos test estadísticos con un nivel de confianza del 95% que la serie es estacionaria luego de aplicar la diferenciación.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="preprocesamiento-y-visualización..html#cb6-1" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb6-2"><a href="preprocesamiento-y-visualización..html#cb6-2" tabindex="-1"></a><span class="co"># Establecer el espacio para 4 gráficos (2 filas x 2 columnas)</span></span>
+<span id="cb6-3"><a href="preprocesamiento-y-visualización..html#cb6-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb6-4"><a href="preprocesamiento-y-visualización..html#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="preprocesamiento-y-visualización..html#cb6-5" tabindex="-1"></a><span class="co"># ACF para estacionariedad</span></span>
+<span id="cb6-6"><a href="preprocesamiento-y-visualización..html#cb6-6" tabindex="-1"></a><span class="fu">acf</span>(estacionariedad, <span class="at">lag.max =</span> <span class="dv">34</span>, <span class="at">main =</span> <span class="st">&quot;ACF - Serie diferenciada&quot;</span>)</span>
+<span id="cb6-7"><a href="preprocesamiento-y-visualización..html#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="preprocesamiento-y-visualización..html#cb6-8" tabindex="-1"></a><span class="co"># PACF para estacionariedad</span></span>
+<span id="cb6-9"><a href="preprocesamiento-y-visualización..html#cb6-9" tabindex="-1"></a><span class="fu">pacf</span>(estacionariedad, <span class="at">lag.max =</span> <span class="dv">34</span>, <span class="at">main =</span> <span class="st">&quot;PACF - Serie diferenciada&quot;</span>)</span>
+<span id="cb6-10"><a href="preprocesamiento-y-visualización..html#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="preprocesamiento-y-visualización..html#cb6-11" tabindex="-1"></a><span class="co"># ACF para datos_filtrados$tavg</span></span>
+<span id="cb6-12"><a href="preprocesamiento-y-visualización..html#cb6-12" tabindex="-1"></a><span class="fu">acf</span>(datos_filtrados<span class="sc">$</span>tavg, <span class="at">lag.max =</span> <span class="dv">34</span>, <span class="at">main =</span> <span class="st">&quot;ACF - Serie Original&quot;</span>)</span>
+<span id="cb6-13"><a href="preprocesamiento-y-visualización..html#cb6-13" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="preprocesamiento-y-visualización..html#cb6-14" tabindex="-1"></a><span class="co"># PACF para datos_filtrados$tavg</span></span>
+<span id="cb6-15"><a href="preprocesamiento-y-visualización..html#cb6-15" tabindex="-1"></a><span class="fu">pacf</span>(datos_filtrados<span class="sc">$</span>tavg, <span class="at">lag.max =</span> <span class="dv">34</span>, <span class="at">main =</span> <span class="st">&quot;PACF - Serie Original&quot;</span>)</span></code></pre></div>
+</details>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><strong>Figura 3.1</strong> Análisis de Autocorrelación (ACF y PACF) de la serie de temperatura promedio de la ciudad de Bogotá DC.</p>
+<p>A partir de la <strong>Figura 3.1</strong> se puede extraer lo siguiente:</p>
+<p><strong>ACF - Serie Estacionariedad:</strong></p>
+<ul>
+<li>Presenta un pico inicial en el Lag 1 que sobrepasa significativamente el límite de confianza inferior (negativo y relativamente grande), indicando una fuerte autocorrelación negativa en el primer rezago. Esto sugiere que valores altos tienden a ser seguidos por valores bajos y viceversa en períodos consecutivos. Posteriormente, las autocorrelaciones para los rezagos mayores se encuentran dentro de los límites de confianza, lo que sugiere una falta de autocorrelación significativa para esos rezagos.</li>
+</ul>
+<p><strong>PACF - Serie Estacionariedad:</strong></p>
+<ul>
+<li>Muestra un pico significativo en el Lag 1 (negativo), lo que indica una correlación parcial negativa importante entre una observación y la observación anterior, después de eliminar la influencia de los rezagos intermedios. Los rezagos posteriores no muestran autocorrelaciones parciales significativas, ya que sus barras se mantienen dentro de los límites de confianza.</li>
+</ul>
+<p><strong>ACF - Serie Original:</strong></p>
+<ul>
+<li>Exhibe un decaimiento gradual de las autocorrelaciones a medida que aumenta el número de rezagos. Las barras permanecen fuera de los límites de confianza durante varios rezagos, lo que sugiere una autocorrelación positiva significativa que persiste a lo largo del tiempo.</li>
+</ul>
+<p><strong>PACF - Serie Original:</strong></p>
+<ul>
+<li>Muestra un pico significativo en el Lag 1 (positivo), indicando una correlación parcial positiva importante con el rezago inmediato anterior. Aunque disminuyen rápidamente, algunos rezagos posteriores podrían mostrar autocorrelaciones parciales ligeramente significativas.</li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="referencias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/christianveram/Series_de_tiempo/edit/main/03-Cap3.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/christianveram/Series_de_tiempo/blob/main/03-Cap3.Rmd",
+    "text": null
+  },
+  "download": ["bookdownproj.pdf"],
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>
