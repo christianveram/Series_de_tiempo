@@ -1,6 +1,7 @@
 # Estacionariedad
 
-**Preprocesamiento y visualización**
+## **Preprocesamiento y visualización**
+
 Christian Vera, Yuli Deaquiz y Juan Rodríguez
 
 04/05/2025
@@ -64,8 +65,7 @@ kable(adf_table, align = "c") %>%
   kable_styling(
     bootstrap_options = c("striped", "hover", "condensed", "responsive"),
     full_width = FALSE,
-    position = "center"
-  )
+    position = "center")
 
 
 
