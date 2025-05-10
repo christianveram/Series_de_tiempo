@@ -7,3 +7,6 @@ estacionariedad
 preprocesamiento-y-visualización.
 diferenciación
 holt-winters.
+ajuste-holt-winters.
+pronóstico-holt-winters-12-meses
+métricas-de-desempeño.

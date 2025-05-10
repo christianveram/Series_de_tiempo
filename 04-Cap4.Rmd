@@ -1,3 +1,96 @@
 # Holt-Winters.
 
+```{r, include=TRUE, message=FALSE, warning=FALSE}
 
+# Cargar paquetes necesarios
+library(tidyverse)
+library(lubridate)
+library(forecast)
+library(kableExtra)
+
+# 1. Cargar y preparar los datos
+url <- "https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/temperaturas_final.csv"
+datos <- read.csv(url)
+datos$time <- as.Date(datos$time)
+
+datos_filtrados <- datos %>%
+  mutate(fecha = as.Date(time),
+         tavg = round(tavg, 2)) %>%
+  filter(fecha >= as.Date("1975-01-01")) %>%
+  arrange(fecha)
+
+# 2. Agregar datos por mes (promedio mensual)
+datos_mensuales <- datos_filtrados %>%
+  mutate(anio_mes = floor_date(fecha, "month")) %>%
+  group_by(anio_mes) %>%
+  summarise(tavg = mean(tavg, na.rm = TRUE)) %>%
+  ungroup()
+
+# 3. Convertir a serie temporal
+ts_temp <- ts(datos_mensuales$tavg,
+              start = c(year(min(datos_mensuales$anio_mes)), month(min(datos_mensuales$anio_mes))),
+              frequency = 12)
+
+# 4. Separar en conjunto de entrenamiento (hasta 2021) y prueba (desde 2022)
+ts_train <- window(ts_temp, end = c(2021, 12))
+ts_test  <- window(ts_temp, start = c(2022, 1))
+
+# 5. Ajustar modelo Holt-Winters clásico
+modelo_hw <- HoltWinters(ts_train)
+
+```
+
+## Ajuste Holt-Winters.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+
+# 6. Graficar la serie completa con ajuste
+# Crear una serie para el ajuste de Holt-Winters
+ajuste_completo <- ts(fitted(modelo_hw)[,1], start = start(ts_temp), frequency = 12)
+
+# Graficar la serie original con el ajuste
+plot(ts_temp, main = "Serie completa con ajuste Holt-Winters",
+     col = "blue", lwd = 2, ylab = "Temperatura", xlab = "Tiempo")
+lines(ajuste_completo, col = "red", lwd = 1.5)
+legend("topright", legend = c("Serie completa", "Ajuste Holt-Winters"),
+       col = c("blue", "red"), lwd = 2)
+
+
+```
+
+## Pronóstico Holt-Winters (12 meses)
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# 7. Pronosticar 12 meses
+pronostico <- forecast(modelo_hw, h = 12)
+
+# 8. Graficar el pronóstico
+plot(pronostico, main = "Pronóstico Holt-Winters (12 meses)",
+     xlab = "Tiempo", ylab = "Temperatura")
+```
+
+## Métricas de desempeño.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+
+# 9. Calcular métricas de evaluación sobre el conjunto de prueba
+metricas <- accuracy(pronostico, ts_test)
+metricas_df <- as.data.frame(metricas)[2, c("ME", "RMSE", "MAE", "MAPE")]
+
+# Convertir a data frame con nombres descriptivos
+metricas_df <- data.frame(
+  Métrica = c("Error Medio (ME)", 
+              "Raíz del Error Cuadrático Medio (RMSE)",
+              "Error Absoluto Medio (MAE)", 
+              "Error Porcentual Absoluto Medio (MAPE)"),
+  Valor = unlist(metricas_df)
+)
+
+# 10. Mostrar tabla con el mismo estilo que adf_table
+kable(metricas_df, align = "c", row.names = FALSE) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
