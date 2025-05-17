@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Capítulo: 5 Metodología Box Jenkins | Temperatura histórica en la ciudad de Bogotá.</title>
+  <meta name="description" content="Capítulo: 5 Metodología Box Jenkins | Temperatura histórica en la ciudad de Bogotá." />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Capítulo: 5 Metodología Box Jenkins | Temperatura histórica en la ciudad de Bogotá." />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Capítulo: 5 Metodología Box Jenkins | Temperatura histórica en la ciudad de Bogotá." />
+  
+  
+  
+
+<meta name="author" content="Christian Vera, Yuli Deaquiz y Juan Rodríguez" />
+
+
+<meta name="date" content="2025-12-04" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="holt-winters..html"/>
+<link rel="next" href="referencias.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/codefolding-lua-1.1/codefolding-lua.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.4/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Series de tiempo.</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introducción</a></li>
+<li class="chapter" data-level="2" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><i class="fa fa-check"></i><b>2</b> Medias Móviles, Rezagos y Descomposición de la Serie Temporal</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html#promedios-móviles-sma-de-7-y-30-días"><i class="fa fa-check"></i><b>2.1</b> Promedios móviles (SMA de 7 y 30 días)</a></li>
+<li class="chapter" data-level="2.2" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html#rezagos-lags-de-1-7-y-30-días"><i class="fa fa-check"></i><b>2.2</b> Rezagos (lags de 1, 7 y 30 días)</a></li>
+<li class="chapter" data-level="2.3" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html#descomposición-stl."><i class="fa fa-check"></i><b>2.3</b> Descomposición STL.</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="estacionariedad.html"><a href="estacionariedad.html"><i class="fa fa-check"></i><b>3</b> Estacionariedad</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="estacionariedad.html"><a href="estacionariedad.html#preprocesamiento-y-visualización."><i class="fa fa-check"></i><b>3.1</b> <strong>Preprocesamiento y visualización.</strong></a></li>
+<li class="chapter" data-level="3.2" data-path="estacionariedad.html"><a href="estacionariedad.html#diferenciación"><i class="fa fa-check"></i><b>3.2</b> Diferenciación</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="holt-winters..html"><a href="holt-winters..html"><i class="fa fa-check"></i><b>4</b> Holt-Winters.</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="holt-winters..html"><a href="holt-winters..html#ajuste-holt-winters."><i class="fa fa-check"></i><b>4.1</b> Ajuste Holt-Winters.</a></li>
+<li class="chapter" data-level="4.2" data-path="holt-winters..html"><a href="holt-winters..html#pronóstico-holt-winters-12-meses"><i class="fa fa-check"></i><b>4.2</b> Pronóstico Holt-Winters (12 meses)</a></li>
+<li class="chapter" data-level="4.3" data-path="holt-winters..html"><a href="holt-winters..html#métricas-de-desempeño."><i class="fa fa-check"></i><b>4.3</b> Métricas de desempeño.</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html"><i class="fa fa-check"></i><b>5</b> Metodología Box Jenkins</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#cargar-y-preparar-dato"><i class="fa fa-check"></i><b>5.1</b> Cargar y preparar dato</a></li>
+<li class="chapter" data-level="5.2" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#visualización-inicial-de-la-serie"><i class="fa fa-check"></i><b>5.2</b> Visualización inicial de la serie</a></li>
+<li class="chapter" data-level="5.3" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#transformación-a-serie-temporal-mensual"><i class="fa fa-check"></i><b>5.3</b> Transformación a serie temporal mensual</a></li>
+<li class="chapter" data-level="5.4" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#prueba-de-estacionariedad-adf"><i class="fa fa-check"></i><b>5.4</b> Prueba de Estacionariedad (ADF)</a></li>
+<li class="chapter" data-level="5.5" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#prueba-kpss"><i class="fa fa-check"></i><b>5.5</b> Prueba KPSS</a></li>
+<li class="chapter" data-level="5.6" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#diferenciación."><i class="fa fa-check"></i><b>5.6</b> Diferenciación.</a></li>
+<li class="chapter" data-level="5.7" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#acf-y-pacf"><i class="fa fa-check"></i><b>5.7</b> ACF y PACF</a></li>
+<li class="chapter" data-level="5.8" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#ajuste-del-modelo-arima."><i class="fa fa-check"></i><b>5.8</b> Ajuste del modelo ARIMA.</a></li>
+<li class="chapter" data-level="5.9" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#diagnóstico-del-modelo"><i class="fa fa-check"></i><b>5.9</b> Diagnóstico del modelo</a></li>
+<li class="chapter" data-level="5.10" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#pronóstico"><i class="fa fa-check"></i><b>5.10</b> Pronóstico</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/christianveram/Series_de_tiempo/" target="blank">Enlace a Github</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Temperatura histórica en la ciudad de Bogotá.</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="metodología-box-jenkins" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Capítulo: 5</span> Metodología Box Jenkins<a href="metodología-box-jenkins.html#metodología-box-jenkins" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>La metodología Box-Jenkins es una herramienta muy útil cuando queremos entender y predecir el comportamiento de una serie de datos a lo largo del tiempo. Se basa en modelos ARIMA, que permiten analizar si hay patrones repetitivos, tendencias o comportamientos aleatorios en los datos. El proceso consiste en tres pasos,identificar el tipo de modelo que mejor se ajusta, estimar sus parámetros y luego revisar si los errores del modelo (los residuos) no tienen patrones, es decir, que sean impredecibles.</p>
+<p>En este caso, vamos a aplicar esta metodología a la temperatura promedio mensual de Bogotá desde 1975. Aunque el clima de la ciudad tiende a ser bastante estable por su ubicación y altitud, los datos históricos pueden mostrar cambios sutiles o incluso señales del cambio climático. Con esta técnica, podemos ver cómo ha cambiado la temperatura a lo largo del tiempo y hacer pronósticos que podrían ser útiles para temas como la agricultura, la salud o la planificación urbana.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="metodología-box-jenkins.html#cb15-1" tabindex="-1"></a><span class="co"># Librerías</span></span>
+<span id="cb15-2"><a href="metodología-box-jenkins.html#cb15-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb15-3"><a href="metodología-box-jenkins.html#cb15-3" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb15-4"><a href="metodología-box-jenkins.html#cb15-4" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb15-5"><a href="metodología-box-jenkins.html#cb15-5" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb15-6"><a href="metodología-box-jenkins.html#cb15-6" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb15-7"><a href="metodología-box-jenkins.html#cb15-7" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span></code></pre></div>
+</details>
+<div id="cargar-y-preparar-dato" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Cargar y preparar dato<a href="metodología-box-jenkins.html#cargar-y-preparar-dato" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="metodología-box-jenkins.html#cb16-1" tabindex="-1"></a><span class="co"># Cargar datos</span></span>
+<span id="cb16-2"><a href="metodología-box-jenkins.html#cb16-2" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/temperaturas_final.csv&quot;</span></span>
+<span id="cb16-3"><a href="metodología-box-jenkins.html#cb16-3" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url)</span>
+<span id="cb16-4"><a href="metodología-box-jenkins.html#cb16-4" tabindex="-1"></a>datos<span class="sc">$</span>time <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(datos<span class="sc">$</span>time)</span>
+<span id="cb16-5"><a href="metodología-box-jenkins.html#cb16-5" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="metodología-box-jenkins.html#cb16-6" tabindex="-1"></a><span class="co"># Filtrar desde 1975 y redondear tavg</span></span>
+<span id="cb16-7"><a href="metodología-box-jenkins.html#cb16-7" tabindex="-1"></a>datos_filtrados <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
+<span id="cb16-8"><a href="metodología-box-jenkins.html#cb16-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fecha =</span> <span class="fu">as.Date</span>(time),</span>
+<span id="cb16-9"><a href="metodología-box-jenkins.html#cb16-9" tabindex="-1"></a>         <span class="at">tavg =</span> <span class="fu">round</span>(tavg, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-10"><a href="metodología-box-jenkins.html#cb16-10" tabindex="-1"></a>  <span class="fu">filter</span>(fecha <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;1975-01-01&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-11"><a href="metodología-box-jenkins.html#cb16-11" tabindex="-1"></a>  <span class="fu">arrange</span>(fecha)</span></code></pre></div>
+</details>
+</div>
+<div id="visualización-inicial-de-la-serie" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Visualización inicial de la serie<a href="metodología-box-jenkins.html#visualización-inicial-de-la-serie" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="metodología-box-jenkins.html#cb17-1" tabindex="-1"></a><span class="fu">ggplot</span>(datos_filtrados, <span class="fu">aes</span>(<span class="at">x =</span> fecha, <span class="at">y =</span> tavg)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="metodología-box-jenkins.html#cb17-2" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;#2C3E50&quot;</span>) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="metodología-box-jenkins.html#cb17-3" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Serie de Temperatura Promedio Diaria&quot;</span>,</span>
+<span id="cb17-4"><a href="metodología-box-jenkins.html#cb17-4" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Fecha&quot;</span>,</span>
+<span id="cb17-5"><a href="metodología-box-jenkins.html#cb17-5" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Temperatura (°C)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb17-6"><a href="metodología-box-jenkins.html#cb17-6" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div>
+</details>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+<div id="transformación-a-serie-temporal-mensual" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Transformación a serie temporal mensual<a href="metodología-box-jenkins.html#transformación-a-serie-temporal-mensual" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>En primer lugar, se agrupan los datos por mes y se calcula el promedio mensual de temperatura (tavg). Luego, se crea una serie temporal (ts_mensual) con esos valores, indicando que comienza en enero de 1975 y tiene una frecuencia mensual.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="metodología-box-jenkins.html#cb18-1" tabindex="-1"></a>datos_mensual <span class="ot">&lt;-</span> datos_filtrados <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="metodología-box-jenkins.html#cb18-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mes =</span> <span class="fu">floor_date</span>(fecha, <span class="st">&quot;month&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="metodología-box-jenkins.html#cb18-3" tabindex="-1"></a>  <span class="fu">group_by</span>(mes) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="metodología-box-jenkins.html#cb18-4" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">tavg =</span> <span class="fu">mean</span>(tavg, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb18-5"><a href="metodología-box-jenkins.html#cb18-5" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="metodología-box-jenkins.html#cb18-6" tabindex="-1"></a>ts_mensual <span class="ot">&lt;-</span> <span class="fu">ts</span>(datos_mensual<span class="sc">$</span>tavg, <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">1975</span>, <span class="dv">1</span>), <span class="at">frequency =</span> <span class="dv">12</span>)</span>
+<span id="cb18-7"><a href="metodología-box-jenkins.html#cb18-7" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="metodología-box-jenkins.html#cb18-8" tabindex="-1"></a><span class="fu">autoplot</span>(ts_mensual, <span class="at">series =</span> <span class="st">&quot;Temperatura&quot;</span>) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="metodología-box-jenkins.html#cb18-9" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Temperatura Promedio Mensual&quot;</span>) <span class="sc">+</span></span>
+<span id="cb18-10"><a href="metodología-box-jenkins.html#cb18-10" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Temperatura (°C)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb18-11"><a href="metodología-box-jenkins.html#cb18-11" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Año&quot;</span>) <span class="sc">+</span></span>
+<span id="cb18-12"><a href="metodología-box-jenkins.html#cb18-12" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb18-13"><a href="metodología-box-jenkins.html#cb18-13" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Temperatura&quot;</span> <span class="ot">=</span> <span class="st">&quot;#1F77B4&quot;</span>))</span></code></pre></div>
+</details>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+</div>
+<div id="prueba-de-estacionariedad-adf" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Prueba de Estacionariedad (ADF)<a href="metodología-box-jenkins.html#prueba-de-estacionariedad-adf" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>La prueba de Dickey-Fuller aumentada (ADF) es una prueba estadística que se utiliza para determinar si una serie temporal es estacionaria, es decir, si sus propiedades estadísticas como la media y la varianza se mantienen constantes en el tiempo. En esta prueba, la hipótesis nula (H₀) establece que la serie no es estacionaria, mientras que la hipótesis alternativa (H₁) afirma que sí lo es. En el resultado obtenido, el valor del estadístico fue -14.5464 y el valor-p fue 0.01, lo que significa que se rechaza la hipótesis nula al nivel de significancia del 5%. Por lo tanto, se concluye que la serie de temperatura promedio (tavg) es estacionaria y puede ser utilizada en modelos que requieren esta condición, como los modelos ARIMA.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="metodología-box-jenkins.html#cb19-1" tabindex="-1"></a><span class="do">## Prueba de Dickey-Fuller</span></span>
+<span id="cb19-2"><a href="metodología-box-jenkins.html#cb19-2" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="metodología-box-jenkins.html#cb19-3" tabindex="-1"></a><span class="co"># Prueba de Dickey-Fuller</span></span>
+<span id="cb19-4"><a href="metodología-box-jenkins.html#cb19-4" tabindex="-1"></a><span class="co"># Ho: La serie no presenta estacionariedad</span></span>
+<span id="cb19-5"><a href="metodología-box-jenkins.html#cb19-5" tabindex="-1"></a><span class="co"># Ha: La serie presenta estacionariedad</span></span>
+<span id="cb19-6"><a href="metodología-box-jenkins.html#cb19-6" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="metodología-box-jenkins.html#cb19-7" tabindex="-1"></a><span class="co"># Ejecutar la prueba Dickey-Fuller</span></span>
+<span id="cb19-8"><a href="metodología-box-jenkins.html#cb19-8" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb19-9"><a href="metodología-box-jenkins.html#cb19-9" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb19-10"><a href="metodología-box-jenkins.html#cb19-10" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb19-11"><a href="metodología-box-jenkins.html#cb19-11" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="metodología-box-jenkins.html#cb19-12" tabindex="-1"></a><span class="co"># Ejecutar la prueba</span></span>
+<span id="cb19-13"><a href="metodología-box-jenkins.html#cb19-13" tabindex="-1"></a>adf_result <span class="ot">&lt;-</span> <span class="fu">adf.test</span>(datos_filtrados<span class="sc">$</span>tavg)</span>
+<span id="cb19-14"><a href="metodología-box-jenkins.html#cb19-14" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="metodología-box-jenkins.html#cb19-15" tabindex="-1"></a><span class="co"># Crear tabla de resultados</span></span>
+<span id="cb19-16"><a href="metodología-box-jenkins.html#cb19-16" tabindex="-1"></a>adf_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb19-17"><a href="metodología-box-jenkins.html#cb19-17" tabindex="-1"></a>  <span class="st">&quot;Test Statistic&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(adf_result<span class="sc">$</span>statistic, <span class="dv">4</span>),</span>
+<span id="cb19-18"><a href="metodología-box-jenkins.html#cb19-18" tabindex="-1"></a>  <span class="st">&quot;Lag Order&quot;</span> <span class="ot">=</span> adf_result<span class="sc">$</span>parameter,</span>
+<span id="cb19-19"><a href="metodología-box-jenkins.html#cb19-19" tabindex="-1"></a>  <span class="st">&quot;p-value&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(adf_result<span class="sc">$</span>p.value, <span class="dv">4</span>),</span>
+<span id="cb19-20"><a href="metodología-box-jenkins.html#cb19-20" tabindex="-1"></a>  <span class="st">&quot;Alternative&quot;</span> <span class="ot">=</span> <span class="fu">as.character</span>(adf_result<span class="sc">$</span>alternative),</span>
+<span id="cb19-21"><a href="metodología-box-jenkins.html#cb19-21" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb19-22"><a href="metodología-box-jenkins.html#cb19-22" tabindex="-1"></a>)</span>
+<span id="cb19-23"><a href="metodología-box-jenkins.html#cb19-23" tabindex="-1"></a></span>
+<span id="cb19-24"><a href="metodología-box-jenkins.html#cb19-24" tabindex="-1"></a><span class="co"># Mostrar tabla con kableExtra</span></span>
+<span id="cb19-25"><a href="metodología-box-jenkins.html#cb19-25" tabindex="-1"></a><span class="fu">kable</span>(adf_table, <span class="at">align =</span> <span class="st">&quot;c&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-26"><a href="metodología-box-jenkins.html#cb19-26" tabindex="-1"></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb19-27"><a href="metodología-box-jenkins.html#cb19-27" tabindex="-1"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>, <span class="st">&quot;responsive&quot;</span>),</span>
+<span id="cb19-28"><a href="metodología-box-jenkins.html#cb19-28" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb19-29"><a href="metodología-box-jenkins.html#cb19-29" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">&quot;center&quot;</span>)</span></code></pre></div>
+</details>
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:center;">
+Test Statistic
+</th>
+<th style="text-align:center;">
+Lag Order
+</th>
+<th style="text-align:center;">
+p-value
+</th>
+<th style="text-align:center;">
+Alternative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Dickey-Fuller
+</td>
+<td style="text-align:center;">
+-14.5464
+</td>
+<td style="text-align:center;">
+26
+</td>
+<td style="text-align:center;">
+0.01
+</td>
+<td style="text-align:center;">
+stationary
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="prueba-kpss" class="section level2 hasAnchor" number="5.5">
+<h2><span class="header-section-number">5.5</span> Prueba KPSS<a href="metodología-box-jenkins.html#prueba-kpss" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>La prueba KPSS es una prueba estadística utilizada para evaluar si una serie temporal es estacionaria en nivel. A diferencia de la prueba ADF, en la KPSS la hipótesis nula (H₀) establece que la serie es estacionaria, mientras que la hipótesis alternativa (H₁) plantea que no es estacionaria. En el resultado mostrado, el estadístico KPSS fue 34.079 con un valor-p de 0.01. Como el valor-p es menor a 0.05, se rechaza la hipótesis nula, lo que indica que la serie de temperatura promedio (tavg) no es estacionaria según esta prueba. Este resultado contradice la prueba ADF, por lo cual es pertinente realizar una diferenciación para confirmar el supuesto de estacionariedad del modelo ARIMA.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="metodología-box-jenkins.html#cb20-1" tabindex="-1"></a><span class="co"># Prueba KPSS</span></span>
+<span id="cb20-2"><a href="metodología-box-jenkins.html#cb20-2" tabindex="-1"></a><span class="co"># Ho: La serie es estacionaria</span></span>
+<span id="cb20-3"><a href="metodología-box-jenkins.html#cb20-3" tabindex="-1"></a><span class="co"># Ha: La serie no es estacionaria</span></span>
+<span id="cb20-4"><a href="metodología-box-jenkins.html#cb20-4" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="metodología-box-jenkins.html#cb20-5" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb20-6"><a href="metodología-box-jenkins.html#cb20-6" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb20-7"><a href="metodología-box-jenkins.html#cb20-7" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb20-8"><a href="metodología-box-jenkins.html#cb20-8" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="metodología-box-jenkins.html#cb20-9" tabindex="-1"></a>kpss_result <span class="ot">&lt;-</span> <span class="fu">kpss.test</span>(datos_filtrados<span class="sc">$</span>tavg)</span>
+<span id="cb20-10"><a href="metodología-box-jenkins.html#cb20-10" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="metodología-box-jenkins.html#cb20-11" tabindex="-1"></a><span class="co"># Crear tabla de resultados</span></span>
+<span id="cb20-12"><a href="metodología-box-jenkins.html#cb20-12" tabindex="-1"></a>kpss_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb20-13"><a href="metodología-box-jenkins.html#cb20-13" tabindex="-1"></a>  <span class="st">&quot;KPSS Statistic&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(kpss_result<span class="sc">$</span>statistic, <span class="dv">3</span>),</span>
+<span id="cb20-14"><a href="metodología-box-jenkins.html#cb20-14" tabindex="-1"></a>  <span class="st">&quot;Truncation Lag Parameter&quot;</span> <span class="ot">=</span> kpss_result<span class="sc">$</span>parameter,</span>
+<span id="cb20-15"><a href="metodología-box-jenkins.html#cb20-15" tabindex="-1"></a>  <span class="st">&quot;p-value&quot;</span> <span class="ot">=</span> <span class="fu">round</span>(kpss_result<span class="sc">$</span>p.value, <span class="dv">4</span>),</span>
+<span id="cb20-16"><a href="metodología-box-jenkins.html#cb20-16" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-17"><a href="metodología-box-jenkins.html#cb20-17" tabindex="-1"></a>)</span>
+<span id="cb20-18"><a href="metodología-box-jenkins.html#cb20-18" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="metodología-box-jenkins.html#cb20-19" tabindex="-1"></a><span class="co"># Mostrar tabla con numeración automática</span></span>
+<span id="cb20-20"><a href="metodología-box-jenkins.html#cb20-20" tabindex="-1"></a><span class="fu">kable</span>(kpss_table, <span class="at">align =</span> <span class="st">&quot;c&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-21"><a href="metodología-box-jenkins.html#cb20-21" tabindex="-1"></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb20-22"><a href="metodología-box-jenkins.html#cb20-22" tabindex="-1"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>, <span class="st">&quot;responsive&quot;</span>),</span>
+<span id="cb20-23"><a href="metodología-box-jenkins.html#cb20-23" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb20-24"><a href="metodología-box-jenkins.html#cb20-24" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">&quot;center&quot;</span></span>
+<span id="cb20-25"><a href="metodología-box-jenkins.html#cb20-25" tabindex="-1"></a>  )</span></code></pre></div>
+</details>
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:center;">
+KPSS Statistic
+</th>
+<th style="text-align:center;">
+Truncation Lag Parameter
+</th>
+<th style="text-align:center;">
+p-value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+KPSS Level
+</td>
+<td style="text-align:center;">
+34.079
+</td>
+<td style="text-align:center;">
+14
+</td>
+<td style="text-align:center;">
+0.01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="diferenciación." class="section level2 hasAnchor" number="5.6">
+<h2><span class="header-section-number">5.6</span> Diferenciación.<a href="metodología-box-jenkins.html#diferenciación." class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Se aplica una primera diferencia a la serie temporal mensual de temperatura promedio con el objetivo de eliminar tendencias y hacerla estacionaria, es decir, que sus propiedades estadísticas no cambien con el tiempo. Luego, se vuelve a realizar las dos pruebas sobre la serie diferenciada. Los resultados muestran que en la prueba ADF el valor-p es 0.01, lo que lleva a rechazar la hipótesis nula y concluir que la serie diferenciada es estacionaria. Por su parte, en la prueba KPSS el valor-p es 0.1, por lo que no se rechaza la hipótesis nula y se concluye que la serie es estacionaria, lo cual es adecuado para el modelo ARIMA que requiere esta propiedad.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="metodología-box-jenkins.html#cb21-1" tabindex="-1"></a><span class="co">#Primera diferencia</span></span>
+<span id="cb21-2"><a href="metodología-box-jenkins.html#cb21-2" tabindex="-1"></a>ts_diff1 <span class="ot">&lt;-</span> <span class="fu">diff</span>(ts_mensual)</span>
+<span id="cb21-3"><a href="metodología-box-jenkins.html#cb21-3" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="metodología-box-jenkins.html#cb21-4" tabindex="-1"></a><span class="do">### Nuevas pruebas</span></span>
+<span id="cb21-5"><a href="metodología-box-jenkins.html#cb21-5" tabindex="-1"></a>adf_diff <span class="ot">&lt;-</span> <span class="fu">adf.test</span>(ts_diff1)</span>
+<span id="cb21-6"><a href="metodología-box-jenkins.html#cb21-6" tabindex="-1"></a>kpss_diff <span class="ot">&lt;-</span> <span class="fu">kpss.test</span>(ts_diff1)</span>
+<span id="cb21-7"><a href="metodología-box-jenkins.html#cb21-7" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="metodología-box-jenkins.html#cb21-8" tabindex="-1"></a><span class="do">### Tabla ADF sobre primera diferencia</span></span>
+<span id="cb21-9"><a href="metodología-box-jenkins.html#cb21-9" tabindex="-1"></a>adf_table <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb21-10"><a href="metodología-box-jenkins.html#cb21-10" tabindex="-1"></a>  Estadístico<span class="at">_ADF =</span> <span class="fu">round</span>(adf_diff<span class="sc">$</span>statistic, <span class="dv">4</span>),</span>
+<span id="cb21-11"><a href="metodología-box-jenkins.html#cb21-11" tabindex="-1"></a>  <span class="at">Valor_P =</span> <span class="fu">round</span>(adf_diff<span class="sc">$</span>p.value, <span class="dv">4</span>),</span>
+<span id="cb21-12"><a href="metodología-box-jenkins.html#cb21-12" tabindex="-1"></a>  Hipótesis<span class="at">_nula =</span> <span class="st">&quot;La serie NO es estacionaria&quot;</span>,</span>
+<span id="cb21-13"><a href="metodología-box-jenkins.html#cb21-13" tabindex="-1"></a>  Decisión <span class="ot">=</span> <span class="fu">ifelse</span>(adf_diff<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>,</span>
+<span id="cb21-14"><a href="metodología-box-jenkins.html#cb21-14" tabindex="-1"></a>                    <span class="st">&quot;Rechazada: la serie ES estacionaria&quot;</span>,</span>
+<span id="cb21-15"><a href="metodología-box-jenkins.html#cb21-15" tabindex="-1"></a>                    <span class="st">&quot;No rechazada: la serie NO es estacionaria&quot;</span>)</span>
+<span id="cb21-16"><a href="metodología-box-jenkins.html#cb21-16" tabindex="-1"></a>)</span>
+<span id="cb21-17"><a href="metodología-box-jenkins.html#cb21-17" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="metodología-box-jenkins.html#cb21-18" tabindex="-1"></a><span class="co"># Mostrar tabla con kableExtra Prueba ADF</span></span>
+<span id="cb21-19"><a href="metodología-box-jenkins.html#cb21-19" tabindex="-1"></a><span class="fu">kable</span>(adf_table, <span class="at">align =</span> <span class="st">&quot;c&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-20"><a href="metodología-box-jenkins.html#cb21-20" tabindex="-1"></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb21-21"><a href="metodología-box-jenkins.html#cb21-21" tabindex="-1"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>, <span class="st">&quot;responsive&quot;</span>),</span>
+<span id="cb21-22"><a href="metodología-box-jenkins.html#cb21-22" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb21-23"><a href="metodología-box-jenkins.html#cb21-23" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">&quot;center&quot;</span>)</span></code></pre></div>
+</details>
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+Estadístico_ADF
+</th>
+<th style="text-align:center;">
+Valor_P
+</th>
+<th style="text-align:center;">
+Hipótesis_nula
+</th>
+<th style="text-align:center;">
+Decisión
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+-14.3295
+</td>
+<td style="text-align:center;">
+0.01
+</td>
+<td style="text-align:center;">
+La serie NO es estacionaria
+</td>
+<td style="text-align:center;">
+Rechazada: la serie ES estacionaria
+</td>
+</tr>
+</tbody>
+</table>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="metodología-box-jenkins.html#cb22-1" tabindex="-1"></a><span class="co"># Tabla KPSS sobre primera diferencia</span></span>
+<span id="cb22-2"><a href="metodología-box-jenkins.html#cb22-2" tabindex="-1"></a>kpss_table <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb22-3"><a href="metodología-box-jenkins.html#cb22-3" tabindex="-1"></a>  Estadístico<span class="at">_KPSS =</span> <span class="fu">round</span>(kpss_diff<span class="sc">$</span>statistic, <span class="dv">4</span>),</span>
+<span id="cb22-4"><a href="metodología-box-jenkins.html#cb22-4" tabindex="-1"></a>  <span class="at">Valor_P =</span> kpss_diff<span class="sc">$</span>p.value,</span>
+<span id="cb22-5"><a href="metodología-box-jenkins.html#cb22-5" tabindex="-1"></a>  Hipótesis<span class="at">_nula =</span> <span class="st">&quot;La serie ES estacionaria&quot;</span>,</span>
+<span id="cb22-6"><a href="metodología-box-jenkins.html#cb22-6" tabindex="-1"></a>  Decisión <span class="ot">=</span> <span class="fu">ifelse</span>(kpss_diff<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>,</span>
+<span id="cb22-7"><a href="metodología-box-jenkins.html#cb22-7" tabindex="-1"></a>                    <span class="st">&quot;Rechazada: la serie NO es estacionaria&quot;</span>,</span>
+<span id="cb22-8"><a href="metodología-box-jenkins.html#cb22-8" tabindex="-1"></a>                    <span class="st">&quot;No rechazada: la serie ES estacionaria&quot;</span>)</span>
+<span id="cb22-9"><a href="metodología-box-jenkins.html#cb22-9" tabindex="-1"></a>)</span>
+<span id="cb22-10"><a href="metodología-box-jenkins.html#cb22-10" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="metodología-box-jenkins.html#cb22-11" tabindex="-1"></a><span class="co"># Mostrar tabla con kableExtra Prueba KPSS</span></span>
+<span id="cb22-12"><a href="metodología-box-jenkins.html#cb22-12" tabindex="-1"></a><span class="fu">kable</span>(kpss_table, <span class="at">align =</span> <span class="st">&quot;c&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-13"><a href="metodología-box-jenkins.html#cb22-13" tabindex="-1"></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb22-14"><a href="metodología-box-jenkins.html#cb22-14" tabindex="-1"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>, <span class="st">&quot;responsive&quot;</span>),</span>
+<span id="cb22-15"><a href="metodología-box-jenkins.html#cb22-15" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb22-16"><a href="metodología-box-jenkins.html#cb22-16" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">&quot;center&quot;</span>)</span></code></pre></div>
+</details>
+<table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+Estadístico_KPSS
+</th>
+<th style="text-align:center;">
+Valor_P
+</th>
+<th style="text-align:center;">
+Hipótesis_nula
+</th>
+<th style="text-align:center;">
+Decisión
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+0.0098
+</td>
+<td style="text-align:center;">
+0.1
+</td>
+<td style="text-align:center;">
+La serie ES estacionaria
+</td>
+<td style="text-align:center;">
+No rechazada: la serie ES estacionaria
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="acf-y-pacf" class="section level2 hasAnchor" number="5.7">
+<h2><span class="header-section-number">5.7</span> ACF y PACF<a href="metodología-box-jenkins.html#acf-y-pacf" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="metodología-box-jenkins.html#cb23-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb23-2"><a href="metodología-box-jenkins.html#cb23-2" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb23-3"><a href="metodología-box-jenkins.html#cb23-3" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb23-4"><a href="metodología-box-jenkins.html#cb23-4" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="metodología-box-jenkins.html#cb23-5" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggAcf</span>(ts_diff1) <span class="sc">+</span> </span>
+<span id="cb23-6"><a href="metodología-box-jenkins.html#cb23-6" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb23-7"><a href="metodología-box-jenkins.html#cb23-7" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;ACF de la serie diferenciada&quot;</span>) <span class="sc">+</span></span>
+<span id="cb23-8"><a href="metodología-box-jenkins.html#cb23-8" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb23-9"><a href="metodología-box-jenkins.html#cb23-9" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="metodología-box-jenkins.html#cb23-10" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggPacf</span>(ts_diff1) <span class="sc">+</span> </span>
+<span id="cb23-11"><a href="metodología-box-jenkins.html#cb23-11" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb23-12"><a href="metodología-box-jenkins.html#cb23-12" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;PACF de la serie diferenciada&quot;</span>) <span class="sc">+</span></span>
+<span id="cb23-13"><a href="metodología-box-jenkins.html#cb23-13" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb23-14"><a href="metodología-box-jenkins.html#cb23-14" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="metodología-box-jenkins.html#cb23-15" tabindex="-1"></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">widths =</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="fl">1.5</span>))</span></code></pre></div>
+</details>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-24-1.png" width="960" /></p>
+<p>Los gráficos muestran el análisis de la autocorrelación (ACF) y la autocorrelación parcial (PACF) de la serie temporal después de aplicar la primera diferencia, lo cual ayuda a identificar la estructura de dependencia entre los valores en diferentes rezagos (lags). A continuación se presentan los aspectos mas relevantes de cada uno:</p>
+<ul>
+<li><p><em>ACF:</em>, observamos que la mayoría de los valores caen dentro de las bandas de confianza (líneas azules), lo que indica que no hay una autocorrelación significativa persistente. Esto sugiere que la serie ya no tiene una tendencia clara ni patrones de dependencia fuertes después de ser diferenciada.</p></li>
+<li><p><em>PACF</em>: se observan algunos picos significativos en los primeros rezagos, pero también la mayoría están dentro de las bandas de confianza. Esto puede indicar que hay ciertas relaciones directas entre la serie actual y algunos rezagos específicos, pero en general, la estructura de dependencia ha disminuido.</p></li>
+</ul>
+</div>
+<div id="ajuste-del-modelo-arima." class="section level2 hasAnchor" number="5.8">
+<h2><span class="header-section-number">5.8</span> Ajuste del modelo ARIMA.<a href="metodología-box-jenkins.html#ajuste-del-modelo-arima." class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Se utiliza la función auto.arima del paquete forecast para ajustar automáticamente un modelo ARIMA, buscando los valores óptimos de tres parámetros principales: p (el orden de la parte autorregresiva), d (el número de diferencias necesarias para que la serie sea estacionaria) y q (el orden de la media móvil). Además, si la serie temporal presenta estacionalidad, la función también ajusta los parámetros estacionales correspondientes: P, D y Q, que representan patrones repetitivos en intervalos específicos, como meses o trimestres.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="metodología-box-jenkins.html#cb24-1" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(ts_mensual, <span class="at">seasonal =</span> <span class="cn">TRUE</span>, <span class="at">stepwise =</span> <span class="cn">FALSE</span>, <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb24-2"><a href="metodología-box-jenkins.html#cb24-2" tabindex="-1"></a><span class="fu">summary</span>(modelo)</span></code></pre></div>
+</details>
+<pre><code>## Series: ts_mensual 
+## ARIMA(2,1,1)(2,0,0)[12] 
+## 
+## Coefficients:
+##          ar1     ar2      ma1    sar1    sar2
+##       0.4517  0.2583  -0.9884  0.3165  0.2267
+## s.e.  0.0406  0.0424   0.0059  0.0404  0.0419
+## 
+## sigma^2 = 0.1513:  log likelihood = -285.82
+## AIC=583.65   AICc=583.79   BIC=610.06
+## 
+## Training set error measures:
+##                      ME     RMSE       MAE       MPE     MAPE      MASE
+## Training set 0.02932352 0.387005 0.2941109 0.1413283 2.187546 0.6344701
+##                     ACF1
+## Training set -0.02793378</code></pre>
+<p>El modelo ajustado a la serie ts_mensual fue un ARIMA(2,1,1)(2,0,0)[12], lo que significa que se aplicó una diferenciación no estacional de orden 1 (d = 1) para estabilizar la media de la serie, junto con dos términos autorregresivos (p = 2) y uno de media móvil (q = 1). Además, se incluyeron componentes estacionales autorregresivos (P = 2) sin diferenciación estacional (D = 0) ni términos de media móvil estacional (Q = 0), con una periodicidad de 12, lo que indica que se trata de datos mensuales. Los coeficientes estimados para cada parámetro son estadísticamente significativos, como lo sugieren sus errores estándar relativamente bajos. Esto indica que los componentes del modelo capturan adecuadamente la estructura temporal de la serie.</p>
+<p>En cuanto a la calidad del modelo, la varianza del error fue de 0.1513, lo que indica que los errores de predicción no son muy grandes.Por otro lado, las métricas de error como el RMSE (0.387) y el MAPE (2.19%) muestran que el modelo predice con buena precisión. Finalmente, la autocorrelación del residuo en el primer rezago es muy cercana a cero (-0.028), lo que sugiere que no quedan patrones importantes sin capturar, confirmando que el modelo se ajusta bien a la serie temporal.</p>
+</div>
+<div id="diagnóstico-del-modelo" class="section level2 hasAnchor" number="5.9">
+<h2><span class="header-section-number">5.9</span> Diagnóstico del modelo<a href="metodología-box-jenkins.html#diagnóstico-del-modelo" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="metodología-box-jenkins.html#cb26-1" tabindex="-1"></a><span class="fu">checkresiduals</span>(modelo)</span></code></pre></div>
+</details>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<pre><code>## 
+##  Ljung-Box test
+## 
+## data:  Residuals from ARIMA(2,1,1)(2,0,0)[12]
+## Q* = 43.727, df = 19, p-value = 0.00103
+## 
+## Model df: 5.   Total lags used: 24</code></pre>
+<p>El test de Ljung-Box aplicado a los residuos del modelo ARIMA(2,1,1)(2,0,0)[12] tiene un p-valor de 0.00103, lo cual indica que hay evidencia de autocorrelación en los residuos. En otras palabras, el modelo no logra capturar completamente toda la estructura temporal de la serie, ya que los residuos aún muestran patrones.</p>
+<p>Adicionalmente, el gráfico muestra los residuos del modelo ARIMA(2,1,1)(2,0,0)[12],permitiendo evaluar si estos se comportan como ruido blanco, es decir, si no presentan patrones visibles. Aunque visualmente los residuos parecen centrarse en torno a cero y distribuidos de forma aproximadamente normal, el gráfico de autocorrelación (ACF) revela que hay varios rezagos que exceden los límites de significancia, lo cual confirma la presencia de autocorrelación presentada en el test Ljung-Box.</p>
+</div>
+<div id="pronóstico" class="section level2 hasAnchor" number="5.10">
+<h2><span class="header-section-number">5.10</span> Pronóstico<a href="metodología-box-jenkins.html#pronóstico" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A continuación se presenta el pronóstico con base en el modelo ARIMA(2,1,1)(2,0,0)[12] ajustado a la serie de temperatura mensual. El gráfico muestra la proyección para los próximos 24 meses, incluyendo tanto los valores estimados como los intervalos de confianza que muestran la incentidumbre presentada en cada predicción.</p>
+<details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="metodología-box-jenkins.html#cb28-1" tabindex="-1"></a>forecast_temp <span class="ot">&lt;-</span> <span class="fu">forecast</span>(modelo, <span class="at">h =</span> <span class="dv">24</span>)</span>
+<span id="cb28-2"><a href="metodología-box-jenkins.html#cb28-2" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="metodología-box-jenkins.html#cb28-3" tabindex="-1"></a><span class="fu">autoplot</span>(forecast_temp) <span class="sc">+</span></span>
+<span id="cb28-4"><a href="metodología-box-jenkins.html#cb28-4" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb28-5"><a href="metodología-box-jenkins.html#cb28-5" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Pronóstico de Temperatura para 2 Años&quot;</span>,</span>
+<span id="cb28-6"><a href="metodología-box-jenkins.html#cb28-6" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Año&quot;</span>, </span>
+<span id="cb28-7"><a href="metodología-box-jenkins.html#cb28-7" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Temperatura (°C)&quot;</span></span>
+<span id="cb28-8"><a href="metodología-box-jenkins.html#cb28-8" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb28-9"><a href="metodología-box-jenkins.html#cb28-9" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb28-10"><a href="metodología-box-jenkins.html#cb28-10" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code></pre></div>
+</details>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="holt-winters..html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="referencias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/christianveram/Series_de_tiempo/edit/main/05-cap5.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/christianveram/Series_de_tiempo/blob/main/05-cap5.Rmd",
+    "text": null
+  },
+  "download": ["bookdownproj.pdf"],
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>
