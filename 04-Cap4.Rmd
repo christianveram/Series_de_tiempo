@@ -4,15 +4,15 @@ Christian Vera, Yuli Deaquiz y Juan Rodríguez
 
 10/05/2025
 
-El modelo de Holt-Winters, permite analizar series de tiempo univariantes que contienen factores de tendencia y/o estacionalidad, involucrando un enfoque de suavización exponencial con métodos analíticos y patrones aditivos y multiplicativos. 
+El modelo de Holt-Winters, permite analizar series de tiempo univariantes que contienen factores de tendencia y/o estacionalidad, involucrando un enfoque de suavización exponencial con métodos analíticos y patrones aditivos y multiplicativos.
 
 Es un método mejorado para calcular pronósticos cuando los datos muestran una tendencia y además estacionalidad, por lo cual se incorporan 3 constantes, que son α y β, según la metodología de Holt el cual tiene encuenta el nivel de los datos y su tendencia, agregando además γ, el cual incluye la estacionalidad, cuyos valores también deben estar entre cero y la unidad.
 
 Para este ejercicio se dividio la base de datos en una base de entrenamiento y un test de prueba de la siguiente forma:
 
-- Base de entrenamiento: del periodo de 1975 a 2021.
+-   Base de entrenamiento: del periodo de 1975 a 2021.
 
-- Base de prueba: periodo de 2022 en adelante.
+-   Base de prueba: periodo de 2022 en adelante.
 
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 
@@ -72,13 +72,11 @@ legend("topright", legend = c("Serie completa", "Ajuste Holt-Winters"),
 
 ```
 
-
 **Figura 4.1.** Serie temporal método Hold-Winters para la temperatura promedio de la ciudad Bogotá DC.
 
-Se puede observar en la figura 4.1  que el modelo Hold-Winters muestra un buen ajuste de la variable, ya que la linea roja (modelo de Hold-Winters) es cercana a la serie original (linea azul), sin embargo, no puede captar todas las fluctuaciones menores que puede asociarse a datos atipicos en algunos periodos de tiempo, que pueden estar asociados al fenómeno del niño y la niña.
+Se puede observar en la figura 4.1 que el modelo Hold-Winters muestra un buen ajuste de la variable, ya que la linea roja (modelo de Hold-Winters) es cercana a la serie original (linea azul), sin embargo, no puede captar todas las fluctuaciones menores que puede asociarse a datos atipicos en algunos periodos de tiempo, que pueden estar asociados al fenómeno del niño y la niña.
 
 Además, este modelo esta diseñado para capturar patrones de tendencia y regularidad que pueden verse influenciados en este caso por fenomenos climáticos.
-
 
 ## Pronóstico Holt-Winters (12 meses)
 
@@ -120,14 +118,15 @@ kable(metricas_df, align = "c", row.names = FALSE) %>%
     position = "center"
   )
 ```
- En relación a la tabla anterior, que reporta las métricas del modelo se puede inferir:
- 
- - **Error Medio:** con un valor de -0.77 indica que el modelo subestima la temperatura en -0.77°C.
- 
- - **Raíz del Cudratíco medio de los errores:** con un valor 0.84, esto significa que, en promedio, la desviación de las predicciones del modelo respecto a los valores reales es aproximadamente 0.84 unidades. Un RMSE más bajo indica un mejor ajuste del modelo a los datos, ya que sugiere que los errores de predicción son menores. 
- 
-- **Error Absoluto Medio:** Esto significa que, en promedio, las predicciones del modelo se desvían de los valores reales en aproximadamente 0.77 unidades. A diferencia del RMSE, el MAE no eleva al cuadrado las diferencias, lo que significa que no es tan sensible a los valores atípicos.
 
-- **Error Porcentual Absoluto medio:** En terminos relativo las predicciones del modelo estan un 5.7% por encima o por debajo del valor real.
+En relación a la tabla anterior, que reporta las métricas del modelo se puede inferir:
+
+-   **Error Medio:** con un valor de -0.77 indica que el modelo subestima la temperatura en -0.77°C.
+
+-   **Raíz del Cudratíco medio de los errores:** con un valor 0.84, esto significa que, en promedio, la desviación de las predicciones del modelo respecto a los valores reales es aproximadamente 0.84 unidades. Un RMSE más bajo indica un mejor ajuste del modelo a los datos, ya que sugiere que los errores de predicción son menores.
+
+-   **Error Absoluto Medio:** Esto significa que, en promedio, las predicciones del modelo se desvían de los valores reales en aproximadamente 0.77 unidades. A diferencia del RMSE, el MAE no eleva al cuadrado las diferencias, lo que significa que no es tan sensible a los valores atípicos.
+
+-   **Error Porcentual Absoluto medio:** En terminos relativo las predicciones del modelo estan un 5.7% por encima o por debajo del valor real.
 
 Se puede concluir que la predicción a partir del método Holt-Winter tiene un desempeño adecuado para la variable de temperatura promedio, aunque es suceptible de mejoras para reducir el sesgo y minimizar los errores.

@@ -10,3 +10,14 @@ holt-winters.
 ajuste-holt-winters.
 pronóstico-holt-winters-12-meses
 métricas-de-desempeño.
+metodología-box-jenkins
+cargar-y-preparar-dato
+visualización-inicial-de-la-serie
+transformación-a-serie-temporal-mensual
+prueba-de-estacionariedad-adf
+prueba-kpss
+diferenciación.
+acf-y-pacf
+ajuste-del-modelo-arima.
+diagnóstico-del-modelo
+pronóstico
