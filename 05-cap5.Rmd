@@ -1,5 +1,9 @@
 # Metodología Box Jenkins
 
+Christian Vera, Yuli Deaquiz y Juan Rodríguez
+
+18/05/2025
+
 La metodología Box-Jenkins es una herramienta muy útil cuando queremos entender y predecir el comportamiento de una serie de datos a lo largo del tiempo. Se basa en modelos ARIMA, que permiten analizar si hay patrones repetitivos, tendencias o comportamientos aleatorios en los datos. El proceso consiste en tres pasos,identificar el tipo de modelo que mejor se ajusta, estimar sus parámetros y luego revisar si los errores del modelo (los residuos) no tienen patrones, es decir, que sean impredecibles.
 
 En este caso, vamos a aplicar esta metodología a la temperatura promedio mensual de Bogotá desde 1975. Aunque el clima de la ciudad tiende a ser bastante estable por su ubicación y altitud, los datos históricos pueden mostrar cambios sutiles o incluso señales del cambio climático. Con esta técnica, podemos ver cómo ha cambiado la temperatura a lo largo del tiempo y hacer pronósticos que podrían ser útiles para temas como la agricultura, la salud o la planificación urbana.
@@ -18,7 +22,7 @@ library(lubridate)
 
 
 
-## Cargar y preparar dato
+## Cargar y preparar datos
 
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 
@@ -47,9 +51,11 @@ ggplot(datos_filtrados, aes(x = fecha, y = tavg)) +
   labs(title = "Serie de Temperatura Promedio Diaria",
        x = "Fecha",
        y = "Temperatura (°C)") +
-  theme_minimal(base_size = 13)
+  theme_minimal(base_size = 13)+
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
+**Figura 5.1.** Serie de temperatura promedio diaria.
 
 
 ## Transformación a serie temporal mensual
@@ -69,9 +75,12 @@ autoplot(ts_mensual, series = "Temperatura") +
   ylab("Temperatura (°C)") +
   xlab("Año") +
   theme_minimal() +
-  scale_color_manual(values = c("Temperatura" = "#1F77B4"))
+  scale_color_manual(values = c("Temperatura" = "#1F77B4"))+
+  theme(plot.title = element_text(hjust = 0.5))
 
 ```
+
+**Figura 5.2.** Temperarura promedio mensual de 1975 a 2020.
 
 ## Prueba de Estacionariedad (ADF)
 
@@ -224,6 +233,8 @@ p1 + p2 + plot_layout(widths = c(1.5, 1.5))
 
 ```
 
+**Figura 5.3.** Pruebas ACF y PACF para la serie diferenciada.
+
 Los gráficos muestran el análisis de la autocorrelación (ACF) y la autocorrelación parcial (PACF) de la serie temporal después de aplicar la primera diferencia, lo cual ayuda a identificar la estructura de dependencia entre los valores en diferentes rezagos (lags). A continuación se presentan los aspectos mas relevantes de cada uno: 
 
 * *ACF:*, observamos que la mayoría de los valores caen dentro de las bandas de confianza (líneas azules), lo que indica que no hay una autocorrelación significativa persistente. Esto sugiere que la serie ya no tiene una tendencia clara ni patrones de dependencia fuertes después de ser diferenciada.
@@ -247,9 +258,22 @@ En cuanto a la calidad del modelo, la varianza del error fue de 0.1513, lo que i
 
 ## Diagnóstico del modelo
 
+### Supuesto de normalidad
+```{r}
+#Ho: los residuales presentan una distribución normal
+#Ha: los residuales no presentan distribución normal.
+shapiro.test(resid(modelo))
+```
+
+De acuerdo  al test de shapiro Wilk con un p valor de 2.323e-06 se rechaza la Hiótesis nula lo que indica que los residuales no presentan una distribución normal.
+
+
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 checkresiduals(modelo)
 ```
+
+**Figura 5.4** Modelo ARIMA para la temperatura promedio de la ciudad de Bogotá DC.
+
 El test de Ljung-Box aplicado a los residuos del modelo ARIMA(2,1,1)(2,0,0)[12] tiene un p-valor de 0.00103, lo cual indica que hay evidencia de autocorrelación en los residuos. En otras palabras, el modelo no logra capturar completamente toda la estructura temporal de la serie, ya que los residuos aún muestran patrones. 
 
 Adicionalmente, el gráfico muestra los residuos del modelo ARIMA(2,1,1)(2,0,0)[12],permitiendo evaluar si estos se comportan como ruido blanco, es decir, si no presentan patrones visibles. Aunque visualmente los residuos parecen centrarse en torno a cero y distribuidos de forma aproximadamente normal, el gráfico de autocorrelación (ACF) revela que hay varios rezagos que exceden los límites de significancia, lo cual confirma la presencia de autocorrelación presentada en el test Ljung-Box.
@@ -257,15 +281,15 @@ Adicionalmente, el gráfico muestra los residuos del modelo ARIMA(2,1,1)(2,0,0)[
 
 ## Pronóstico
 
-A continuación se presenta el pronóstico con base en el modelo ARIMA(2,1,1)(2,0,0)[12] ajustado a la serie de temperatura mensual. El gráfico muestra la proyección para los próximos 24 meses, incluyendo tanto los valores estimados como los intervalos de confianza que muestran la incentidumbre presentada en cada predicción.
+A continuación se presenta el pronóstico con base en el modelo ARIMA(2,1,1)(2,0,0)[12] ajustado a la serie de temperatura mensual. El gráfico muestra la proyección para los próximos 12 meses, incluyendo tanto los valores estimados como los intervalos de confianza que muestran la incentidumbre presentada en cada predicción.
 
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 
-forecast_temp <- forecast(modelo, h = 24)
+forecast_temp <- forecast(modelo, h = 12)
 
 autoplot(forecast_temp) +
   labs(
-    title = "Pronóstico de Temperatura para 2 Años",
+    title = "Pronóstico de Temperatura para 12 meses",
     x = "Año", 
     y = "Temperatura (°C)"
   ) +
@@ -274,5 +298,6 @@ autoplot(forecast_temp) +
 
 ```
 
+**Figura 5.5** Pronóstico de temperatura promedio con el modelo ARIMA.
 
 
