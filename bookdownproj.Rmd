@@ -604,6 +604,10 @@ Se puede concluir que la predicción a partir del método Holt-Winter tiene un d
 
 # Metodología Box Jenkins
 
+Christian Vera, Yuli Deaquiz y Juan Rodríguez
+
+18/05/2025
+
 La metodología Box-Jenkins es una herramienta muy útil cuando queremos entender y predecir el comportamiento de una serie de datos a lo largo del tiempo. Se basa en modelos ARIMA, que permiten analizar si hay patrones repetitivos, tendencias o comportamientos aleatorios en los datos. El proceso consiste en tres pasos,identificar el tipo de modelo que mejor se ajusta, estimar sus parámetros y luego revisar si los errores del modelo (los residuos) no tienen patrones, es decir, que sean impredecibles.
 
 En este caso, vamos a aplicar esta metodología a la temperatura promedio mensual de Bogotá desde 1975. Aunque el clima de la ciudad tiende a ser bastante estable por su ubicación y altitud, los datos históricos pueden mostrar cambios sutiles o incluso señales del cambio climático. Con esta técnica, podemos ver cómo ha cambiado la temperatura a lo largo del tiempo y hacer pronósticos que podrían ser útiles para temas como la agricultura, la salud o la planificación urbana.
@@ -622,7 +626,7 @@ library(lubridate)
 
 
 
-## Cargar y preparar dato
+## Cargar y preparar datos
 
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 
@@ -651,9 +655,11 @@ ggplot(datos_filtrados, aes(x = fecha, y = tavg)) +
   labs(title = "Serie de Temperatura Promedio Diaria",
        x = "Fecha",
        y = "Temperatura (°C)") +
-  theme_minimal(base_size = 13)
+  theme_minimal(base_size = 13)+
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
+**Figura 5.1.** Serie de temperatura promedio diaria.
 
 
 ## Transformación a serie temporal mensual
@@ -673,9 +679,12 @@ autoplot(ts_mensual, series = "Temperatura") +
   ylab("Temperatura (°C)") +
   xlab("Año") +
   theme_minimal() +
-  scale_color_manual(values = c("Temperatura" = "#1F77B4"))
+  scale_color_manual(values = c("Temperatura" = "#1F77B4"))+
+  theme(plot.title = element_text(hjust = 0.5))
 
 ```
+
+**Figura 5.2.** Temperarura promedio mensual de 1975 a 2020.
 
 ## Prueba de Estacionariedad (ADF)
 
@@ -828,6 +837,8 @@ p1 + p2 + plot_layout(widths = c(1.5, 1.5))
 
 ```
 
+**Figura 5.3.** Pruebas ACF y PACF para la serie diferenciada.
+
 Los gráficos muestran el análisis de la autocorrelación (ACF) y la autocorrelación parcial (PACF) de la serie temporal después de aplicar la primera diferencia, lo cual ayuda a identificar la estructura de dependencia entre los valores en diferentes rezagos (lags). A continuación se presentan los aspectos mas relevantes de cada uno: 
 
 * *ACF:*, observamos que la mayoría de los valores caen dentro de las bandas de confianza (líneas azules), lo que indica que no hay una autocorrelación significativa persistente. Esto sugiere que la serie ya no tiene una tendencia clara ni patrones de dependencia fuertes después de ser diferenciada.
@@ -851,9 +862,22 @@ En cuanto a la calidad del modelo, la varianza del error fue de 0.1513, lo que i
 
 ## Diagnóstico del modelo
 
+### Supuesto de normalidad
+```{r}
+#Ho: los residuales presentan una distribución normal
+#Ha: los residuales no presentan distribución normal.
+shapiro.test(resid(modelo))
+```
+
+De acuerdo  al test de shapiro Wilk con un p valor de 2.323e-06 se rechaza la Hiótesis nula lo que indica que los residuales no presentan una distribución normal.
+
+
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 checkresiduals(modelo)
 ```
+
+**Figura 5.4** Modelo ARIMA para la temperatura promedio de la ciudad de Bogotá DC.
+
 El test de Ljung-Box aplicado a los residuos del modelo ARIMA(2,1,1)(2,0,0)[12] tiene un p-valor de 0.00103, lo cual indica que hay evidencia de autocorrelación en los residuos. En otras palabras, el modelo no logra capturar completamente toda la estructura temporal de la serie, ya que los residuos aún muestran patrones. 
 
 Adicionalmente, el gráfico muestra los residuos del modelo ARIMA(2,1,1)(2,0,0)[12],permitiendo evaluar si estos se comportan como ruido blanco, es decir, si no presentan patrones visibles. Aunque visualmente los residuos parecen centrarse en torno a cero y distribuidos de forma aproximadamente normal, el gráfico de autocorrelación (ACF) revela que hay varios rezagos que exceden los límites de significancia, lo cual confirma la presencia de autocorrelación presentada en el test Ljung-Box.
@@ -861,15 +885,15 @@ Adicionalmente, el gráfico muestra los residuos del modelo ARIMA(2,1,1)(2,0,0)[
 
 ## Pronóstico
 
-A continuación se presenta el pronóstico con base en el modelo ARIMA(2,1,1)(2,0,0)[12] ajustado a la serie de temperatura mensual. El gráfico muestra la proyección para los próximos 24 meses, incluyendo tanto los valores estimados como los intervalos de confianza que muestran la incentidumbre presentada en cada predicción.
+A continuación se presenta el pronóstico con base en el modelo ARIMA(2,1,1)(2,0,0)[12] ajustado a la serie de temperatura mensual. El gráfico muestra la proyección para los próximos 12 meses, incluyendo tanto los valores estimados como los intervalos de confianza que muestran la incentidumbre presentada en cada predicción.
 
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 
-forecast_temp <- forecast(modelo, h = 24)
+forecast_temp <- forecast(modelo, h = 12)
 
 autoplot(forecast_temp) +
   labs(
-    title = "Pronóstico de Temperatura para 2 Años",
+    title = "Pronóstico de Temperatura para 12 meses",
     x = "Año", 
     y = "Temperatura (°C)"
   ) +
@@ -878,14 +902,178 @@ autoplot(forecast_temp) +
 
 ```
 
+**Figura 5.5** Pronóstico de temperatura promedio con el modelo ARIMA.
 
 
 
 <!--chapter:end:05-cap5.Rmd-->
 
+# Modelo Prophet.
+
+Christian Vera, Yuli Deaquiz y Juan Rodríguez
+
+23/05/2025
+
+El algoritmo de predicción ‘Prophet’ utiliza un modelo estadístico basado en descomponer la serie temporal en tres componentes principales que representan: Tendencia, Estacionalidad y Festivos y eventos.
+
+Para la tendencia utiliza una función no lineal que se ajusta a los cambios no periódicos a largo plazo. Para la estacionalidad utiliza un modelo de Fourier para capturar patrones repetitivos. La estacionalidad puede ser modelada como componente aditivo o como componente multiplicativo.
+
+## Cargar los datos
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+
+# Librerias
+library(prophet)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(tseries)
+
+# Paso 1: Descargar y preparar datos
+
+url <- "https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/temperaturas_final.csv"
+datos <- read.csv(url)
+datos$time <- as.Date(datos$time)
+
+# Paso 2: Filtrar desde 1975 y agrupar por mes
+datos_mensual <- datos %>%
+  filter(time >= as.Date("1975-01-01")) %>%
+  mutate(mes = floor_date(time, "month"),
+         tavg = round(tavg, 2)) %>%
+  group_by(mes) %>%
+  summarise(tavg = mean(tavg, na.rm = TRUE)) %>%
+  ungroup()
+
+ts_mensual <- ts(datos_mensual$tavg, start = c(1975, 1), frequency = 12)
+
+# Paso 3: Formatear para Prophet (ds = fecha, y = valor)
+df_prophet <- datos_mensual %>%
+  rename(ds = mes, y = tavg)
+
+```
+
+## Modelo Prophet
+
+Se genera a partir del algoritmo los parámetros mensuales teniendo en cuenta un modelo aditivo,  teniendo presente que la variable de temperatura promedio presenta estacionalidad,en este caso el modelo fue construido con un intervalo de predicción del 95% lo que indica que el valor futuro esta dentro de este rango, con una flexibilidad moderada, lo cual ayudara a identificar cambios grandes y significativos , lo que ayuda a mantener una tendencia estable.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# Paso 4: Ajustar modelo Prophet con parámetros para series mensuales
+
+modelo <- prophet(
+  df_prophet,
+  seasonality.mode = "additive",     # O usar "multiplicative" si la estacionalidad crece con el nivel
+  yearly.seasonality = TRUE,
+  weekly.seasonality = FALSE,
+  daily.seasonality = FALSE,
+  changepoint.prior.scale = 0.05,
+  interval.width = 0.95  # Controla sensibilidad a cambios de tendencia
+)
+```
+
+
+## Predicciones próximos 12 meses
+
+A partir del modelo se realizó la predicción para un periodo de 12 meses desde abril  de 2025, donde se estimó con un nivel de confianza del 95% que la temperatura promedio para la cidudad de Bogotá DC en el período  2026-04-01 será de 14.89 °C, con una mínima de	14.02 °C y una máxima	15.75 °C.
+
+Además de puede observar una tendencia ascendente en el histório de la temperatura promedio mensual.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+library(forecast)
+# Paso 5: Crear horizonte futuro y predecir
+# Crear horizonte futuro de 12 meses (mensual)
+futuro <- make_future_dataframe(modelo, periods = 12, freq = "month")
+
+# Realizar la predicción
+prediccion <- predict(modelo, futuro)
+
+# Corregir formato de fechas (evita problemas con filtros)
+prediccion$ds <- as.Date(prediccion$ds)
+df_prophet$ds <- as.Date(df_prophet$ds)
+
+ # Paso 6: Graficar resultados con plot()
+# Visualización base con intervalos de confianza (por defecto al 80%)
+
+forecast=predict(modelo,futuro)
+dyplot.prophet(modelo, forecast)
+
+# Componentes del modelo (tendencia y estacionalidad)
+prophet_plot_components(modelo,forecast)
+
+####
+tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')])
+
+```
+
+
+## Métricas del modelo.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# Paso 7: Calcular métricas sobre datos históricos
+pred_train <- prediccion %>%
+  filter(ds <= max(df_prophet$ds)) %>%
+  select(ds, yhat)
+
+# Comparar con datos reales
+evaluacion_completa <- df_prophet %>%
+  left_join(pred_train, by = "ds") %>%
+  mutate(
+    error = y - yhat,
+    abs_error = abs(error),
+    sq_error = error^2,
+    pe = error / y,
+    ape = abs(error / y)
+  )
+
+# Calcular métricas
+me_total <- mean(evaluacion_completa$error, na.rm = TRUE)
+rmse_total <- sqrt(mean(evaluacion_completa$sq_error, na.rm = TRUE))
+mae_total <- mean(evaluacion_completa$abs_error, na.rm = TRUE)
+mpe_total <- mean(evaluacion_completa$pe, na.rm = TRUE) * 100
+mape_total <- mean(evaluacion_completa$ape, na.rm = TRUE) * 100
+
+# MASE
+mae_naive_total <- mean(abs(diff(df_prophet$y)), na.rm = TRUE)
+mase_total <- mae_total / mae_naive_total
+
+##-------------------------------------
+##Tabla en Kable Extra con los resultados
+##-------------------------------------
+
+tabla_metricas <- data.frame(
+  Métrica = c("ME", "RMSE", "MAE", "MPE (%)", "MAPE (%)", "MASE"),
+  Valor = round(c(me_total, rmse_total, mae_total, mpe_total, mape_total, mase_total), 3)
+)
+
+kable(tabla_metricas, caption = "Métricas del modelo") %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center"
+  )
+
+
+```
+
+
+- **ME (Error Medio):** El valor de ME es 0.000, lo que indica que, en promedio, el modelo no tiene sesgo y las predicciones son bastante centradas alrededor de los valores reales. Esto sugiere que el modelo no tiende a sobreestimar ni subestimar sistemáticamente.
+
+- **RMSE (Raíz del Error Cuadrático Medio):** Con un valor de 0.422, el RMSE proporciona una medida de la magnitud promedio de los errores de predicción, este valor indica un buen ajuste del modelo. 
+
+- **MAE (Error Absoluto Medio):** El MAE de 0.323 indica el promedio de los errores absolutos entre las predicciones y los valores reales, siendo un valor bajo que lo podemos asociar a un buen ajuste de la variable temperatura a este modelo de predicción. 
+
+- **MPE (Error Porcentual Medio):** Con un valor de -0.101%, el MPE indica que, en promedio, las predicciones son ligeramente menores que los valores reales, pero el porcentaje es muy pequeño, lo que sugiere que el modelo es bastante preciso en términos porcentuales.
+
+- **MAPE (Error Porcentual Absoluto Medio):** El MAPE de 2.404% indica que, en promedio, las predicciones están dentro de un 2.404% de los valores reales. lo cual lo poedemos asociar a un un buen nivel de precisión, teniendo en cuenta que el nivel de confianza usado es del 95%.
+
+Finalmente, este modelo es aplicable a la variable en estudio "Temperatura promedio de la ciudad de Bogotá", teniendo presente la tendencia y estacionalidad presente en este conjunto de datos.
+
+<!--chapter:end:06-cap6.Rmd-->
+
 `r if (knitr:::is_html_output()) '
 # Referencias {-}
 '`
 
-<!--chapter:end:05-referencias.RMD-->
+<!--chapter:end:07-referencias.RMD-->
 

@@ -1,3 +1,4 @@
+tab:unnamed-chunk-32
 introducción
 medias-móviles-rezagos-y-descomposición-de-la-serie-temporal
 promedios-móviles-sma-de-7-y-30-días
@@ -22,3 +23,8 @@ ajuste-del-modelo-arima.
 diagnóstico-del-modelo
 supuesto-de-normalidad
 pronóstico
+modelo-prophet.
+cargar-los-datos
+modelo-prophet
+predicciones-próximos-12-meses
+métricas-del-modelo.

@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="holt-winters..html"/>
-<link rel="next" href="referencias.html"/>
+<link rel="next" href="modelo-prophet..html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -63,6 +63,14 @@
 <script src="libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
 <link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+<link href="libs/dygraphs-1.1.1/dygraph.css" rel="stylesheet" />
+<script src="libs/dygraphs-1.1.1/dygraph-combined.js"></script>
+<script src="libs/dygraphs-1.1.1/shapes.js"></script>
+<script src="libs/moment-2.8.4/moment.js"></script>
+<script src="libs/moment-timezone-0.2.5/moment-timezone-with-data.js"></script>
+<script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
+<script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script>
+<script src="libs/Dygraph.Plugins.Unzoom-1.0/unzoom.js"></script>
 
 
 <style type="text/css">
@@ -77,7 +85,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -174,39 +182,46 @@ div.csl-indent {
 <li><a href="./">Series de tiempo.</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="05-cap5.html"><a href="#introducci%C3%B3n"><i class="fa fa-check"></i><b>1</b> Introducción</a></li>
-<li class="chapter" data-level="2" data-path="05-cap5.html"><a href="#medias-m%C3%B3viles-rezagos-y-descomposici%C3%B3n-de-la-serie-temporal"><i class="fa fa-check"></i><b>2</b> Medias Móviles, Rezagos y Descomposición de la Serie Temporal</a>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introducción</a></li>
+<li class="chapter" data-level="2" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><i class="fa fa-check"></i><b>2</b> Medias Móviles, Rezagos y Descomposición de la Serie Temporal</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="05-cap5.html"><a href="#promedios-m%C3%B3viles-sma-de-7-y-30-d%C3%ADas"><i class="fa fa-check"></i><b>2.1</b> Promedios móviles (SMA de 7 y 30 días)</a></li>
-<li class="chapter" data-level="2.2" data-path="05-cap5.html"><a href="#rezagos-lags-de-1-7-y-30-d%C3%ADas"><i class="fa fa-check"></i><b>2.2</b> Rezagos (lags de 1, 7 y 30 días)</a></li>
-<li class="chapter" data-level="2.3" data-path="05-cap5.html"><a href="#descomposici%C3%B3n-stl."><i class="fa fa-check"></i><b>2.3</b> Descomposición STL.</a></li>
+<li class="chapter" data-level="2.1" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html#promedios-móviles-sma-de-7-y-30-días"><i class="fa fa-check"></i><b>2.1</b> Promedios móviles (SMA de 7 y 30 días)</a></li>
+<li class="chapter" data-level="2.2" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html#rezagos-lags-de-1-7-y-30-días"><i class="fa fa-check"></i><b>2.2</b> Rezagos (lags de 1, 7 y 30 días)</a></li>
+<li class="chapter" data-level="2.3" data-path="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html"><a href="medias-móviles-rezagos-y-descomposición-de-la-serie-temporal.html#descomposición-stl."><i class="fa fa-check"></i><b>2.3</b> Descomposición STL.</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="estacionariedad.html"><a href="estacionariedad.html"><i class="fa fa-check"></i><b>3</b> Estacionariedad</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="05-cap5.html"><a href="#preprocesamiento-y-visualizaci%C3%B3n."><i class="fa fa-check"></i><b>3.1</b> <strong>Preprocesamiento y visualización.</strong></a></li>
-<li class="chapter" data-level="3.2" data-path="05-cap5.html"><a href="#diferenciaci%C3%B3n"><i class="fa fa-check"></i><b>3.2</b> Diferenciación</a></li>
+<li class="chapter" data-level="3.1" data-path="estacionariedad.html"><a href="estacionariedad.html#preprocesamiento-y-visualización."><i class="fa fa-check"></i><b>3.1</b> <strong>Preprocesamiento y visualización.</strong></a></li>
+<li class="chapter" data-level="3.2" data-path="estacionariedad.html"><a href="estacionariedad.html#diferenciación"><i class="fa fa-check"></i><b>3.2</b> Diferenciación</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="holt-winters..html"><a href="holt-winters..html"><i class="fa fa-check"></i><b>4</b> Holt-Winters.</a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="holt-winters..html"><a href="holt-winters..html#ajuste-holt-winters."><i class="fa fa-check"></i><b>4.1</b> Ajuste Holt-Winters.</a></li>
-<li class="chapter" data-level="4.2" data-path="05-cap5.html"><a href="#pron%C3%B3stico-holt-winters-12-meses"><i class="fa fa-check"></i><b>4.2</b> Pronóstico Holt-Winters (12 meses)</a></li>
-<li class="chapter" data-level="4.3" data-path="05-cap5.html"><a href="#m%C3%A9tricas-de-desempe%C3%B1o."><i class="fa fa-check"></i><b>4.3</b> Métricas de desempeño.</a></li>
+<li class="chapter" data-level="4.2" data-path="holt-winters..html"><a href="holt-winters..html#pronóstico-holt-winters-12-meses"><i class="fa fa-check"></i><b>4.2</b> Pronóstico Holt-Winters (12 meses)</a></li>
+<li class="chapter" data-level="4.3" data-path="holt-winters..html"><a href="holt-winters..html#métricas-de-desempeño."><i class="fa fa-check"></i><b>4.3</b> Métricas de desempeño.</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="05-cap5.html"><a href="#metodolog%C3%ADa-box-jenkins"><i class="fa fa-check"></i><b>5</b> Metodología Box Jenkins</a>
+<li class="chapter" data-level="5" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html"><i class="fa fa-check"></i><b>5</b> Metodología Box Jenkins</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html"><i class="fa fa-check"></i><b>5.1</b> Cargar y preparar datos</a></li>
-<li class="chapter" data-level="5.2" data-path="05-cap5.html"><a href="#visualizaci%C3%B3n-inicial-de-la-serie"><i class="fa fa-check"></i><b>5.2</b> Visualización inicial de la serie</a></li>
-<li class="chapter" data-level="5.3" data-path="05-cap5.html"><a href="#transformaci%C3%B3n-a-serie-temporal-mensual"><i class="fa fa-check"></i><b>5.3</b> Transformación a serie temporal mensual</a></li>
+<li class="chapter" data-level="5.1" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#cargar-y-preparar-datos"><i class="fa fa-check"></i><b>5.1</b> Cargar y preparar datos</a></li>
+<li class="chapter" data-level="5.2" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#visualización-inicial-de-la-serie"><i class="fa fa-check"></i><b>5.2</b> Visualización inicial de la serie</a></li>
+<li class="chapter" data-level="5.3" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#transformación-a-serie-temporal-mensual"><i class="fa fa-check"></i><b>5.3</b> Transformación a serie temporal mensual</a></li>
 <li class="chapter" data-level="5.4" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#prueba-de-estacionariedad-adf"><i class="fa fa-check"></i><b>5.4</b> Prueba de Estacionariedad (ADF)</a></li>
 <li class="chapter" data-level="5.5" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#prueba-kpss"><i class="fa fa-check"></i><b>5.5</b> Prueba KPSS</a></li>
-<li class="chapter" data-level="5.6" data-path="05-cap5.html"><a href="#diferenciaci%C3%B3n."><i class="fa fa-check"></i><b>5.6</b> Diferenciación.</a></li>
+<li class="chapter" data-level="5.6" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#diferenciación."><i class="fa fa-check"></i><b>5.6</b> Diferenciación.</a></li>
 <li class="chapter" data-level="5.7" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#acf-y-pacf"><i class="fa fa-check"></i><b>5.7</b> ACF y PACF</a></li>
 <li class="chapter" data-level="5.8" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#ajuste-del-modelo-arima."><i class="fa fa-check"></i><b>5.8</b> Ajuste del modelo ARIMA.</a></li>
-<li class="chapter" data-level="5.9" data-path="05-cap5.html"><a href="#diagn%C3%B3stico-del-modelo"><i class="fa fa-check"></i><b>5.9</b> Diagnóstico del modelo</a>
+<li class="chapter" data-level="5.9" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#diagnóstico-del-modelo"><i class="fa fa-check"></i><b>5.9</b> Diagnóstico del modelo</a>
 <ul>
 <li class="chapter" data-level="5.9.1" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#supuesto-de-normalidad"><i class="fa fa-check"></i><b>5.9.1</b> Supuesto de normalidad</a></li>
 </ul></li>
-<li class="chapter" data-level="5.10" data-path="05-cap5.html"><a href="#pron%C3%B3stico"><i class="fa fa-check"></i><b>5.10</b> Pronóstico</a></li>
+<li class="chapter" data-level="5.10" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#pronóstico"><i class="fa fa-check"></i><b>5.10</b> Pronóstico</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="modelo-prophet..html"><a href="modelo-prophet..html"><i class="fa fa-check"></i><b>6</b> Modelo Prophet.</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="modelo-prophet..html"><a href="modelo-prophet..html#cargar-los-datos"><i class="fa fa-check"></i><b>6.1</b> Cargar los datos</a></li>
+<li class="chapter" data-level="6.2" data-path="modelo-prophet..html"><a href="modelo-prophet..html#modelo-prophet"><i class="fa fa-check"></i><b>6.2</b> Modelo Prophet</a></li>
+<li class="chapter" data-level="6.3" data-path="modelo-prophet..html"><a href="modelo-prophet..html#predicciones-próximos-12-meses"><i class="fa fa-check"></i><b>6.3</b> Predicciones próximos 12 meses</a></li>
+<li class="chapter" data-level="6.4" data-path="modelo-prophet..html"><a href="modelo-prophet..html#métricas-del-modelo."><i class="fa fa-check"></i><b>6.4</b> Métricas del modelo.</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
@@ -230,7 +245,7 @@ div.csl-indent {
 
             <section class="normal" id="section-">
 <div id="metodología-box-jenkins" class="section level1 hasAnchor" number="5">
-<h1><span class="header-section-number">Capítulo: 5</span> Metodología Box Jenkins<a href="#metodolog%C3%ADa-box-jenkins" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<h1><span class="header-section-number">Capítulo: 5</span> Metodología Box Jenkins<a href="metodología-box-jenkins.html#metodología-box-jenkins" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Christian Vera, Yuli Deaquiz y Juan Rodríguez</p>
 <p>18/05/2025</p>
 <p>La metodología Box-Jenkins es una herramienta muy útil cuando queremos entender y predecir el comportamiento de una serie de datos a lo largo del tiempo. Se basa en modelos ARIMA, que permiten analizar si hay patrones repetitivos, tendencias o comportamientos aleatorios en los datos. El proceso consiste en tres pasos,identificar el tipo de modelo que mejor se ajusta, estimar sus parámetros y luego revisar si los errores del modelo (los residuos) no tienen patrones, es decir, que sean impredecibles.</p>
@@ -261,7 +276,7 @@ div.csl-indent {
 </details>
 </div>
 <div id="visualización-inicial-de-la-serie" class="section level2 hasAnchor" number="5.2">
-<h2><span class="header-section-number">5.2</span> Visualización inicial de la serie<a href="#visualizaci%C3%B3n-inicial-de-la-serie" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<h2><span class="header-section-number">5.2</span> Visualización inicial de la serie<a href="metodología-box-jenkins.html#visualización-inicial-de-la-serie" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="metodología-box-jenkins.html#cb17-1" tabindex="-1"></a><span class="fu">ggplot</span>(datos_filtrados, <span class="fu">aes</span>(<span class="at">x =</span> fecha, <span class="at">y =</span> tavg)) <span class="sc">+</span></span>
 <span id="cb17-2"><a href="metodología-box-jenkins.html#cb17-2" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;#2C3E50&quot;</span>) <span class="sc">+</span></span>
@@ -275,7 +290,7 @@ div.csl-indent {
 <p><strong>Figura 5.1.</strong> Serie de temperatura promedio diaria.</p>
 </div>
 <div id="transformación-a-serie-temporal-mensual" class="section level2 hasAnchor" number="5.3">
-<h2><span class="header-section-number">5.3</span> Transformación a serie temporal mensual<a href="#transformaci%C3%B3n-a-serie-temporal-mensual" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<h2><span class="header-section-number">5.3</span> Transformación a serie temporal mensual<a href="metodología-box-jenkins.html#transformación-a-serie-temporal-mensual" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>En primer lugar, se agrupan los datos por mes y se calcula el promedio mensual de temperatura (tavg). Luego, se crea una serie temporal (ts_mensual) con esos valores, indicando que comienza en enero de 1975 y tiene una frecuencia mensual.</p>
 <details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="metodología-box-jenkins.html#cb18-1" tabindex="-1"></a>datos_mensual <span class="ot">&lt;-</span> datos_filtrados <span class="sc">%&gt;%</span></span>
@@ -435,7 +450,7 @@ KPSS Level
 </table>
 </div>
 <div id="diferenciación." class="section level2 hasAnchor" number="5.6">
-<h2><span class="header-section-number">5.6</span> Diferenciación.<a href="#diferenciaci%C3%B3n." class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<h2><span class="header-section-number">5.6</span> Diferenciación.<a href="metodología-box-jenkins.html#diferenciación." class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Se aplica una primera diferencia a la serie temporal mensual de temperatura promedio con el objetivo de eliminar tendencias y hacerla estacionaria, es decir, que sus propiedades estadísticas no cambien con el tiempo. Luego, se vuelve a realizar las dos pruebas sobre la serie diferenciada. Los resultados muestran que en la prueba ADF el valor-p es 0.01, lo que lleva a rechazar la hipótesis nula y concluir que la serie diferenciada es estacionaria. Por su parte, en la prueba KPSS el valor-p es 0.1, por lo que no se rechaza la hipótesis nula y se concluye que la serie es estacionaria, lo cual es adecuado para el modelo ARIMA que requiere esta propiedad.</p>
 <details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="metodología-box-jenkins.html#cb21-1" tabindex="-1"></a><span class="co">#Primera diferencia</span></span>
@@ -603,7 +618,7 @@ No rechazada: la serie ES estacionaria
 <p>En cuanto a la calidad del modelo, la varianza del error fue de 0.1513, lo que indica que los errores de predicción no son muy grandes.Por otro lado, las métricas de error como el RMSE (0.387) y el MAPE (2.19%) muestran que el modelo predice con buena precisión. Finalmente, la autocorrelación del residuo en el primer rezago es muy cercana a cero (-0.028), lo que sugiere que no quedan patrones importantes sin capturar, confirmando que el modelo se ajusta bien a la serie temporal.</p>
 </div>
 <div id="diagnóstico-del-modelo" class="section level2 hasAnchor" number="5.9">
-<h2><span class="header-section-number">5.9</span> Diagnóstico del modelo<a href="#diagn%C3%B3stico-del-modelo" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<h2><span class="header-section-number">5.9</span> Diagnóstico del modelo<a href="metodología-box-jenkins.html#diagnóstico-del-modelo" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="supuesto-de-normalidad" class="section level3 hasAnchor" number="5.9.1">
 <h3><span class="header-section-number">5.9.1</span> Supuesto de normalidad<a href="metodología-box-jenkins.html#supuesto-de-normalidad" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
@@ -634,7 +649,7 @@ No rechazada: la serie ES estacionaria
 </div>
 </div>
 <div id="pronóstico" class="section level2 hasAnchor" number="5.10">
-<h2><span class="header-section-number">5.10</span> Pronóstico<a href="#pron%C3%B3stico" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<h2><span class="header-section-number">5.10</span> Pronóstico<a href="metodología-box-jenkins.html#pronóstico" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>A continuación se presenta el pronóstico con base en el modelo ARIMA(2,1,1)(2,0,0)[12] ajustado a la serie de temperatura mensual. El gráfico muestra la proyección para los próximos 12 meses, incluyendo tanto los valores estimados como los intervalos de confianza que muestran la incentidumbre presentada en cada predicción.</p>
 <details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="metodología-box-jenkins.html#cb30-1" tabindex="-1"></a>forecast_temp <span class="ot">&lt;-</span> <span class="fu">forecast</span>(modelo, <span class="at">h =</span> <span class="dv">12</span>)</span>
@@ -659,7 +674,7 @@ No rechazada: la serie ES estacionaria
         </div>
       </div>
 <a href="holt-winters..html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="referencias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="modelo-prophet..html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
