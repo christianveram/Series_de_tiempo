@@ -1,1 +1,132 @@
+# Modelo Prophet.
+
+El modelo prophet aditivo
+
+## Cargar los datos
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+
+# Librerias
+library(prophet)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+
+# Paso 1: Descargar y preparar datos
+
+url <- "https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/temperaturas_final.csv"
+datos <- read.csv(url)
+datos$time <- as.Date(datos$time)
+
+# Paso 2: Filtrar desde 1975 y agrupar por mes
+datos_mensual <- datos %>%
+  filter(time >= as.Date("1975-01-01")) %>%
+  mutate(mes = floor_date(time, "month"),
+         tavg = round(tavg, 2)) %>%
+  group_by(mes) %>%
+  summarise(tavg = mean(tavg, na.rm = TRUE)) %>%
+  ungroup()
+
+# Paso 3: Formatear para Prophet (ds = fecha, y = valor)
+df_prophet <- datos_mensual %>%
+  rename(ds = mes, y = tavg)
+
+```
+
+## Modelo Prophet
+
+Explicar parametros.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# Paso 4: Ajustar modelo Prophet con parámetros para series mensuales
+modelo <- prophet(
+  df_prophet,
+  seasonality.mode = "additive",     # O usar "multiplicative" si la estacionalidad crece con el nivel
+  yearly.seasonality = TRUE,
+  weekly.seasonality = FALSE,
+  daily.seasonality = FALSE,
+  changepoint.prior.scale = 0.05,
+  interval.width = 0.8  # Controla sensibilidad a cambios de tendencia
+)
+```
+
+
+## Predicciones próximos 12 meses
+
+Explicar lo del 
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+
+# Paso 5: Crear horizonte futuro y predecir
+# Crear horizonte futuro de 12 meses (mensual)
+futuro <- make_future_dataframe(modelo, periods = 12, freq = "month")
+
+# Realizar la predicción
+prediccion <- predict(modelo, futuro)
+
+# Corregir formato de fechas (evita problemas con filtros)
+prediccion$ds <- as.Date(prediccion$ds)
+df_prophet$ds <- as.Date(df_prophet$ds)
+
+ # Paso 6: Graficar resultados con plot()
+# Visualización base con intervalos de confianza (por defecto al 80%)
+plot(modelo, prediccion) +
+  ggtitle("Predicción de temperatura mensual con Prophet")
+
+# Componentes del modelo (tendencia y estacionalidad)
+prophet_plot_components(modelo, prediccion)
+
+
+```
+
+## Métricas del modelo.
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# Paso 7: Calcular métricas sobre datos históricos
+pred_train <- prediccion %>%
+  filter(ds <= max(df_prophet$ds)) %>%
+  select(ds, yhat)
+
+# Comparar con datos reales
+evaluacion_completa <- df_prophet %>%
+  left_join(pred_train, by = "ds") %>%
+  mutate(
+    error = y - yhat,
+    abs_error = abs(error),
+    sq_error = error^2,
+    pe = error / y,
+    ape = abs(error / y)
+  )
+
+# Calcular métricas
+me_total <- mean(evaluacion_completa$error, na.rm = TRUE)
+rmse_total <- sqrt(mean(evaluacion_completa$sq_error, na.rm = TRUE))
+mae_total <- mean(evaluacion_completa$abs_error, na.rm = TRUE)
+mpe_total <- mean(evaluacion_completa$pe, na.rm = TRUE) * 100
+mape_total <- mean(evaluacion_completa$ape, na.rm = TRUE) * 100
+
+# MASE
+mae_naive_total <- mean(abs(diff(df_prophet$y)), na.rm = TRUE)
+mase_total <- mae_total / mae_naive_total
+
+##-------------------------------------
+##Tabla en Kable Extra con los resultados
+##-------------------------------------
+
+tabla_metricas <- data.frame(
+  Métrica = c("ME", "RMSE", "MAE", "MPE (%)", "MAPE (%)", "MASE"),
+  Valor = round(c(me_total, rmse_total, mae_total, mpe_total, mape_total, mase_total), 3)
+)
+
+kable(tabla_metricas, caption = "Métricas de desempeño del modelo Prophet sobre temperaturas mensuales") %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center"
+  )
+
+
+```
+
 
