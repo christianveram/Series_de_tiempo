@@ -24,7 +24,7 @@ diagnóstico-del-modelo
 supuesto-de-normalidad
 pronóstico
 modelo-prophet.
-cargar-los-datos
-modelo-prophet
-predicciones-próximos-12-meses
+cargar-los-datos.
+modelo-prophet.-1
+predicciones-próximos-12-meses.
 métricas-del-modelo.

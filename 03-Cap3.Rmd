@@ -1,6 +1,6 @@
 # Estacionariedad
 
-## **Preprocesamiento y visualización.**
+## Preprocesamiento y visualización.
 
 Christian Vera, Yuli Deaquiz y Juan Rodríguez
 

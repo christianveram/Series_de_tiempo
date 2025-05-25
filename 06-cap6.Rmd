@@ -4,15 +4,16 @@ Christian Vera, Yuli Deaquiz y Juan Rodríguez
 
 23/05/2025
 
-El algoritmo de predicción ‘Prophet’ utiliza un modelo estadístico basado en descomponer la serie temporal en tres componentes principales que representan: Tendencia, Estacionalidad y Festivos y eventos.
+El algoritmo de predicción Prophet se basa en un modelo estadístico aditivo que descompone la serie temporal en tres componentes fundamentales: tendencia, que representa los cambios a largo plazo en el nivel de la serie; estacionalidad, que captura patrones cíclicos o repetitivos a lo largo del tiempo (como variaciones mensuales o anuales); y un componente de eventos especiales o festivos, que permite incorporar el impacto de días atípicos o significativos que pueden afectar la serie temporal [@Taylor02012018].
 
 Para la tendencia utiliza una función no lineal que se ajusta a los cambios no periódicos a largo plazo. Para la estacionalidad utiliza un modelo de Fourier para capturar patrones repetitivos. La estacionalidad puede ser modelada como componente aditivo o como componente multiplicativo.
 
-## Cargar los datos
+## Cargar los datos.
+
+Al igual que en las secciones anteriores se cargan los datos y se calcula la temperatura media mensual para ser usada en una serie de tiempo adecuada para para su análisis y pronóstico mediante el modelo Prophet.
 
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 
-# Librerias
 library(prophet)
 library(dplyr)
 library(lubridate)
@@ -44,30 +45,30 @@ df_prophet <- datos_mensual %>%
 
 ```
 
-## Modelo Prophet
+## Modelo Prophet.
 
-Se genera a partir del algoritmo los parámetros mensuales teniendo en cuenta un modelo aditivo,  teniendo presente que la variable de temperatura promedio presenta estacionalidad,en este caso el modelo fue construido con un intervalo de predicción del 95% lo que indica que el valor futuro esta dentro de este rango, con una flexibilidad moderada, lo cual ayudara a identificar cambios grandes y significativos , lo que ayuda a mantener una tendencia estable.
+Se genera a partir del algoritmo los parámetros mensuales teniendo en cuenta un modelo aditivo,  teniendo presente que la variable de temperatura promedio presenta estacionalidad,en este caso el modelo fue construido con un intervalo de predicción del 95% lo que indica que el valor futuro esta dentro de este rango, con una flexibilidad moderada, lo cual ayudara a identificar cambios grandes y significativos, lo que ayuda a mantener una tendencia estable.
 
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
+
 # Paso 4: Ajustar modelo Prophet con parámetros para series mensuales
 
 modelo <- prophet(
   df_prophet,
-  seasonality.mode = "additive",     # O usar "multiplicative" si la estacionalidad crece con el nivel
+  seasonality.mode = "additive",
   yearly.seasonality = TRUE,
   weekly.seasonality = FALSE,
   daily.seasonality = FALSE,
   changepoint.prior.scale = 0.05,
-  interval.width = 0.95  # Controla sensibilidad a cambios de tendencia
-)
+  interval.width = 0.95 )
 ```
 
 
-## Predicciones próximos 12 meses
+## Predicciones próximos 12 meses.
 
-A partir del modelo se realizó la predicción para un periodo de 12 meses desde abril  de 2025, donde se estimó con un nivel de confianza del 95% que la temperatura promedio para la cidudad de Bogotá DC en el período  2026-04-01 será de 14.89 °C, con una mínima de	14.02 °C y una máxima	15.75 °C.
+A partir del modelo se realizó la predicción para un periodo de 12 meses desde abril  de 2025, donde se estimó con un nivel de confianza del 95% que la temperatura promedio para la ciudad de Bogotá DC en el período  2026-04-01 será de 14.89 °C, con una mínima de	14.02 °C y una máxima	15.75 °C.
 
-Además de puede observar una tendencia ascendente en el histório de la temperatura promedio mensual.
+Además de puede observar una tendencia ascendente en el histórico de la temperatura promedio mensual.
 
 ```{r, include=TRUE, message=FALSE, warning=FALSE}
 library(forecast)
@@ -146,8 +147,9 @@ kable(tabla_metricas, caption = "Métricas del modelo") %>%
 
 ```
 
+A continuación se resaltan los aspectos mas relevantes de las métricas obtenidas.
 
-- **ME (Error Medio):** El valor de ME es 0.000, lo que indica que, en promedio, el modelo no tiene sesgo y las predicciones son bastante centradas alrededor de los valores reales. Esto sugiere que el modelo no tiende a sobreestimar ni subestimar sistemáticamente.
+- **ME (Error Medio):** El valor de ME es 0.000, lo que indica que, en promedio, el modelo no tiene sesgo y las predicciones son bastante centradas alrededor de los valores reales. Esto sugiere que el modelo no tiende a sobrestimar ni subestimar sistemáticamente.
 
 - **RMSE (Raíz del Error Cuadrático Medio):** Con un valor de 0.422, el RMSE proporciona una medida de la magnitud promedio de los errores de predicción, este valor indica un buen ajuste del modelo. 
 
@@ -155,6 +157,6 @@ kable(tabla_metricas, caption = "Métricas del modelo") %>%
 
 - **MPE (Error Porcentual Medio):** Con un valor de -0.101%, el MPE indica que, en promedio, las predicciones son ligeramente menores que los valores reales, pero el porcentaje es muy pequeño, lo que sugiere que el modelo es bastante preciso en términos porcentuales.
 
-- **MAPE (Error Porcentual Absoluto Medio):** El MAPE de 2.404% indica que, en promedio, las predicciones están dentro de un 2.404% de los valores reales. lo cual lo poedemos asociar a un un buen nivel de precisión, teniendo en cuenta que el nivel de confianza usado es del 95%.
+- **MAPE (Error Porcentual Absoluto Medio):** El MAPE de 2.404% indica que, en promedio, las predicciones están dentro de un 2.404% de los valores reales. lo cual lo podemos asociar a un un buen nivel de precisión, teniendo en cuenta que el nivel de confianza usado es del 95%.
 
 Finalmente, este modelo es aplicable a la variable en estudio "Temperatura promedio de la ciudad de Bogotá", teniendo presente la tendencia y estacionalidad presente en este conjunto de datos.

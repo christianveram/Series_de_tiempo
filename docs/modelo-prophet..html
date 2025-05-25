@@ -191,7 +191,7 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="3" data-path="estacionariedad.html"><a href="estacionariedad.html"><i class="fa fa-check"></i><b>3</b> Estacionariedad</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="estacionariedad.html"><a href="estacionariedad.html#preprocesamiento-y-visualización."><i class="fa fa-check"></i><b>3.1</b> <strong>Preprocesamiento y visualización.</strong></a></li>
+<li class="chapter" data-level="3.1" data-path="estacionariedad.html"><a href="estacionariedad.html#preprocesamiento-y-visualización."><i class="fa fa-check"></i><b>3.1</b> Preprocesamiento y visualización.</a></li>
 <li class="chapter" data-level="3.2" data-path="estacionariedad.html"><a href="estacionariedad.html#diferenciación"><i class="fa fa-check"></i><b>3.2</b> Diferenciación</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="holt-winters..html"><a href="holt-winters..html"><i class="fa fa-check"></i><b>4</b> Holt-Winters.</a>
@@ -218,9 +218,9 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="6" data-path="modelo-prophet..html"><a href="modelo-prophet..html"><i class="fa fa-check"></i><b>6</b> Modelo Prophet.</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="modelo-prophet..html"><a href="modelo-prophet..html#cargar-los-datos"><i class="fa fa-check"></i><b>6.1</b> Cargar los datos</a></li>
-<li class="chapter" data-level="6.2" data-path="modelo-prophet..html"><a href="modelo-prophet..html#modelo-prophet"><i class="fa fa-check"></i><b>6.2</b> Modelo Prophet</a></li>
-<li class="chapter" data-level="6.3" data-path="modelo-prophet..html"><a href="modelo-prophet..html#predicciones-próximos-12-meses"><i class="fa fa-check"></i><b>6.3</b> Predicciones próximos 12 meses</a></li>
+<li class="chapter" data-level="6.1" data-path="modelo-prophet..html"><a href="modelo-prophet..html#cargar-los-datos."><i class="fa fa-check"></i><b>6.1</b> Cargar los datos.</a></li>
+<li class="chapter" data-level="6.2" data-path="modelo-prophet..html"><a href="modelo-prophet..html#modelo-prophet.-1"><i class="fa fa-check"></i><b>6.2</b> Modelo Prophet.</a></li>
+<li class="chapter" data-level="6.3" data-path="modelo-prophet..html"><a href="modelo-prophet..html#predicciones-próximos-12-meses."><i class="fa fa-check"></i><b>6.3</b> Predicciones próximos 12 meses.</a></li>
 <li class="chapter" data-level="6.4" data-path="modelo-prophet..html"><a href="modelo-prophet..html#métricas-del-modelo."><i class="fa fa-check"></i><b>6.4</b> Métricas del modelo.</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
@@ -248,64 +248,62 @@ div.csl-indent {
 <h1><span class="header-section-number">Capítulo: 6</span> Modelo Prophet.<a href="modelo-prophet..html#modelo-prophet." class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Christian Vera, Yuli Deaquiz y Juan Rodríguez</p>
 <p>23/05/2025</p>
-<p>El algoritmo de predicción ‘Prophet’ utiliza un modelo estadístico basado en descomponer la serie temporal en tres componentes principales que representan: Tendencia, Estacionalidad y Festivos y eventos.</p>
+<p>El algoritmo de predicción Prophet se basa en un modelo estadístico aditivo que descompone la serie temporal en tres componentes fundamentales: tendencia, que representa los cambios a largo plazo en el nivel de la serie; estacionalidad, que captura patrones cíclicos o repetitivos a lo largo del tiempo (como variaciones mensuales o anuales); y un componente de eventos especiales o festivos, que permite incorporar el impacto de días atípicos o significativos que pueden afectar la serie temporal <span class="citation"><a href="#ref-Taylor02012018">[10]</a></span>.</p>
 <p>Para la tendencia utiliza una función no lineal que se ajusta a los cambios no periódicos a largo plazo. Para la estacionalidad utiliza un modelo de Fourier para capturar patrones repetitivos. La estacionalidad puede ser modelada como componente aditivo o como componente multiplicativo.</p>
-<div id="cargar-los-datos" class="section level2 hasAnchor" number="6.1">
-<h2><span class="header-section-number">6.1</span> Cargar los datos<a href="modelo-prophet..html#cargar-los-datos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="cargar-los-datos." class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Cargar los datos.<a href="modelo-prophet..html#cargar-los-datos." class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Al igual que en las secciones anteriores se cargan los datos y se calcula la temperatura media mensual para ser usada en una serie de tiempo adecuada para para su análisis y pronóstico mediante el modelo Prophet.</p>
 <details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="modelo-prophet..html#cb31-1" tabindex="-1"></a><span class="co"># Librerias</span></span>
-<span id="cb31-2"><a href="modelo-prophet..html#cb31-2" tabindex="-1"></a><span class="fu">library</span>(prophet)</span>
-<span id="cb31-3"><a href="modelo-prophet..html#cb31-3" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb31-4"><a href="modelo-prophet..html#cb31-4" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb31-5"><a href="modelo-prophet..html#cb31-5" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb31-6"><a href="modelo-prophet..html#cb31-6" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb31-7"><a href="modelo-prophet..html#cb31-7" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb31-8"><a href="modelo-prophet..html#cb31-8" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
-<span id="cb31-9"><a href="modelo-prophet..html#cb31-9" tabindex="-1"></a></span>
-<span id="cb31-10"><a href="modelo-prophet..html#cb31-10" tabindex="-1"></a><span class="co"># Paso 1: Descargar y preparar datos</span></span>
-<span id="cb31-11"><a href="modelo-prophet..html#cb31-11" tabindex="-1"></a></span>
-<span id="cb31-12"><a href="modelo-prophet..html#cb31-12" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/temperaturas_final.csv&quot;</span></span>
-<span id="cb31-13"><a href="modelo-prophet..html#cb31-13" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url)</span>
-<span id="cb31-14"><a href="modelo-prophet..html#cb31-14" tabindex="-1"></a>datos<span class="sc">$</span>time <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(datos<span class="sc">$</span>time)</span>
-<span id="cb31-15"><a href="modelo-prophet..html#cb31-15" tabindex="-1"></a></span>
-<span id="cb31-16"><a href="modelo-prophet..html#cb31-16" tabindex="-1"></a><span class="co"># Paso 2: Filtrar desde 1975 y agrupar por mes</span></span>
-<span id="cb31-17"><a href="modelo-prophet..html#cb31-17" tabindex="-1"></a>datos_mensual <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
-<span id="cb31-18"><a href="modelo-prophet..html#cb31-18" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;1975-01-01&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb31-19"><a href="modelo-prophet..html#cb31-19" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mes =</span> <span class="fu">floor_date</span>(time, <span class="st">&quot;month&quot;</span>),</span>
-<span id="cb31-20"><a href="modelo-prophet..html#cb31-20" tabindex="-1"></a>         <span class="at">tavg =</span> <span class="fu">round</span>(tavg, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb31-21"><a href="modelo-prophet..html#cb31-21" tabindex="-1"></a>  <span class="fu">group_by</span>(mes) <span class="sc">%&gt;%</span></span>
-<span id="cb31-22"><a href="modelo-prophet..html#cb31-22" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">tavg =</span> <span class="fu">mean</span>(tavg, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb31-23"><a href="modelo-prophet..html#cb31-23" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb31-24"><a href="modelo-prophet..html#cb31-24" tabindex="-1"></a></span>
-<span id="cb31-25"><a href="modelo-prophet..html#cb31-25" tabindex="-1"></a>ts_mensual <span class="ot">&lt;-</span> <span class="fu">ts</span>(datos_mensual<span class="sc">$</span>tavg, <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">1975</span>, <span class="dv">1</span>), <span class="at">frequency =</span> <span class="dv">12</span>)</span>
-<span id="cb31-26"><a href="modelo-prophet..html#cb31-26" tabindex="-1"></a></span>
-<span id="cb31-27"><a href="modelo-prophet..html#cb31-27" tabindex="-1"></a><span class="co"># Paso 3: Formatear para Prophet (ds = fecha, y = valor)</span></span>
-<span id="cb31-28"><a href="modelo-prophet..html#cb31-28" tabindex="-1"></a>df_prophet <span class="ot">&lt;-</span> datos_mensual <span class="sc">%&gt;%</span></span>
-<span id="cb31-29"><a href="modelo-prophet..html#cb31-29" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">ds =</span> mes, <span class="at">y =</span> tavg)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="modelo-prophet..html#cb31-1" tabindex="-1"></a><span class="fu">library</span>(prophet)</span>
+<span id="cb31-2"><a href="modelo-prophet..html#cb31-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb31-3"><a href="modelo-prophet..html#cb31-3" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb31-4"><a href="modelo-prophet..html#cb31-4" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb31-5"><a href="modelo-prophet..html#cb31-5" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb31-6"><a href="modelo-prophet..html#cb31-6" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb31-7"><a href="modelo-prophet..html#cb31-7" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb31-8"><a href="modelo-prophet..html#cb31-8" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="modelo-prophet..html#cb31-9" tabindex="-1"></a><span class="co"># Paso 1: Descargar y preparar datos</span></span>
+<span id="cb31-10"><a href="modelo-prophet..html#cb31-10" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="modelo-prophet..html#cb31-11" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/temperaturas_final.csv&quot;</span></span>
+<span id="cb31-12"><a href="modelo-prophet..html#cb31-12" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url)</span>
+<span id="cb31-13"><a href="modelo-prophet..html#cb31-13" tabindex="-1"></a>datos<span class="sc">$</span>time <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(datos<span class="sc">$</span>time)</span>
+<span id="cb31-14"><a href="modelo-prophet..html#cb31-14" tabindex="-1"></a></span>
+<span id="cb31-15"><a href="modelo-prophet..html#cb31-15" tabindex="-1"></a><span class="co"># Paso 2: Filtrar desde 1975 y agrupar por mes</span></span>
+<span id="cb31-16"><a href="modelo-prophet..html#cb31-16" tabindex="-1"></a>datos_mensual <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
+<span id="cb31-17"><a href="modelo-prophet..html#cb31-17" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;1975-01-01&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb31-18"><a href="modelo-prophet..html#cb31-18" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mes =</span> <span class="fu">floor_date</span>(time, <span class="st">&quot;month&quot;</span>),</span>
+<span id="cb31-19"><a href="modelo-prophet..html#cb31-19" tabindex="-1"></a>         <span class="at">tavg =</span> <span class="fu">round</span>(tavg, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb31-20"><a href="modelo-prophet..html#cb31-20" tabindex="-1"></a>  <span class="fu">group_by</span>(mes) <span class="sc">%&gt;%</span></span>
+<span id="cb31-21"><a href="modelo-prophet..html#cb31-21" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">tavg =</span> <span class="fu">mean</span>(tavg, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb31-22"><a href="modelo-prophet..html#cb31-22" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb31-23"><a href="modelo-prophet..html#cb31-23" tabindex="-1"></a></span>
+<span id="cb31-24"><a href="modelo-prophet..html#cb31-24" tabindex="-1"></a>ts_mensual <span class="ot">&lt;-</span> <span class="fu">ts</span>(datos_mensual<span class="sc">$</span>tavg, <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">1975</span>, <span class="dv">1</span>), <span class="at">frequency =</span> <span class="dv">12</span>)</span>
+<span id="cb31-25"><a href="modelo-prophet..html#cb31-25" tabindex="-1"></a></span>
+<span id="cb31-26"><a href="modelo-prophet..html#cb31-26" tabindex="-1"></a><span class="co"># Paso 3: Formatear para Prophet (ds = fecha, y = valor)</span></span>
+<span id="cb31-27"><a href="modelo-prophet..html#cb31-27" tabindex="-1"></a>df_prophet <span class="ot">&lt;-</span> datos_mensual <span class="sc">%&gt;%</span></span>
+<span id="cb31-28"><a href="modelo-prophet..html#cb31-28" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">ds =</span> mes, <span class="at">y =</span> tavg)</span></code></pre></div>
 </details>
 </div>
-<div id="modelo-prophet" class="section level2 hasAnchor" number="6.2">
-<h2><span class="header-section-number">6.2</span> Modelo Prophet<a href="modelo-prophet..html#modelo-prophet" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Se genera a partir del algoritmo los parámetros mensuales teniendo en cuenta un modelo aditivo, teniendo presente que la variable de temperatura promedio presenta estacionalidad,
-en este caso el modelo fue construido con un intervalo de predicción del 95% lo que indica que el valor futuro esta dentro de este rango, con una flexibilidad moderada, lo cual ayudara a identificar cambios grandes y significativos , lo que ayuda a mantener una tendencia estable.</p>
+<div id="modelo-prophet.-1" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Modelo Prophet.<a href="modelo-prophet..html#modelo-prophet.-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Se genera a partir del algoritmo los parámetros mensuales teniendo en cuenta un modelo aditivo, teniendo presente que la variable de temperatura promedio presenta estacionalidad,en este caso el modelo fue construido con un intervalo de predicción del 95% lo que indica que el valor futuro esta dentro de este rango, con una flexibilidad moderada, lo cual ayudara a identificar cambios grandes y significativos, lo que ayuda a mantener una tendencia estable.</p>
 <details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="modelo-prophet..html#cb32-1" tabindex="-1"></a><span class="co"># Paso 4: Ajustar modelo Prophet con parámetros para series mensuales</span></span>
 <span id="cb32-2"><a href="modelo-prophet..html#cb32-2" tabindex="-1"></a></span>
 <span id="cb32-3"><a href="modelo-prophet..html#cb32-3" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> <span class="fu">prophet</span>(</span>
 <span id="cb32-4"><a href="modelo-prophet..html#cb32-4" tabindex="-1"></a>  df_prophet,</span>
-<span id="cb32-5"><a href="modelo-prophet..html#cb32-5" tabindex="-1"></a>  <span class="at">seasonality.mode =</span> <span class="st">&quot;additive&quot;</span>,     <span class="co"># O usar &quot;multiplicative&quot; si la estacionalidad crece con el nivel</span></span>
+<span id="cb32-5"><a href="modelo-prophet..html#cb32-5" tabindex="-1"></a>  <span class="at">seasonality.mode =</span> <span class="st">&quot;additive&quot;</span>,</span>
 <span id="cb32-6"><a href="modelo-prophet..html#cb32-6" tabindex="-1"></a>  <span class="at">yearly.seasonality =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb32-7"><a href="modelo-prophet..html#cb32-7" tabindex="-1"></a>  <span class="at">weekly.seasonality =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb32-8"><a href="modelo-prophet..html#cb32-8" tabindex="-1"></a>  <span class="at">daily.seasonality =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb32-9"><a href="modelo-prophet..html#cb32-9" tabindex="-1"></a>  <span class="at">changepoint.prior.scale =</span> <span class="fl">0.05</span>,</span>
-<span id="cb32-10"><a href="modelo-prophet..html#cb32-10" tabindex="-1"></a>  <span class="at">interval.width =</span> <span class="fl">0.95</span>  <span class="co"># Controla sensibilidad a cambios de tendencia</span></span>
-<span id="cb32-11"><a href="modelo-prophet..html#cb32-11" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb32-10"><a href="modelo-prophet..html#cb32-10" tabindex="-1"></a>  <span class="at">interval.width =</span> <span class="fl">0.95</span> )</span></code></pre></div>
 </details>
 </div>
-<div id="predicciones-próximos-12-meses" class="section level2 hasAnchor" number="6.3">
-<h2><span class="header-section-number">6.3</span> Predicciones próximos 12 meses<a href="modelo-prophet..html#predicciones-próximos-12-meses" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>A partir del modelo se realizó la predicción para un periodo de 12 meses desde abril de 2025, donde se estimó con un nivel de confianza del 95% que la temperatura promedio para la cidudad de Bogotá DC en el período 2026-04-01 será de 14.89 °C, con una mínima de 14.02 °C y una máxima 15.75 °C.</p>
-<p>Además de puede observar una tendencia ascendente en el histório de la temperatura promedio mensual.</p>
+<div id="predicciones-próximos-12-meses." class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Predicciones próximos 12 meses.<a href="modelo-prophet..html#predicciones-próximos-12-meses." class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A partir del modelo se realizó la predicción para un periodo de 12 meses desde abril de 2025, donde se estimó con un nivel de confianza del 95% que la temperatura promedio para la ciudad de Bogotá DC en el período 2026-04-01 será de 14.89 °C, con una mínima de 14.02 °C y una máxima 15.75 °C.</p>
+<p>Además de puede observar una tendencia ascendente en el histórico de la temperatura promedio mensual.</p>
 <details class=chunk-details><summary class=chunk-summary><span class=chunk-summary-text>Code</span></summary>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="modelo-prophet..html#cb33-1" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
 <span id="cb33-2"><a href="modelo-prophet..html#cb33-2" tabindex="-1"></a><span class="co"># Paso 5: Crear horizonte futuro y predecir</span></span>
@@ -455,15 +453,22 @@ MASE
 </tr>
 </tbody>
 </table>
+<p>A continuación se resaltan los aspectos mas relevantes de las métricas obtenidas.</p>
 <ul>
-<li><p><strong>ME (Error Medio):</strong> El valor de ME es 0.000, lo que indica que, en promedio, el modelo no tiene sesgo y las predicciones son bastante centradas alrededor de los valores reales. Esto sugiere que el modelo no tiende a sobreestimar ni subestimar sistemáticamente.</p></li>
+<li><p><strong>ME (Error Medio):</strong> El valor de ME es 0.000, lo que indica que, en promedio, el modelo no tiene sesgo y las predicciones son bastante centradas alrededor de los valores reales. Esto sugiere que el modelo no tiende a sobrestimar ni subestimar sistemáticamente.</p></li>
 <li><p><strong>RMSE (Raíz del Error Cuadrático Medio):</strong> Con un valor de 0.422, el RMSE proporciona una medida de la magnitud promedio de los errores de predicción, este valor indica un buen ajuste del modelo.</p></li>
 <li><p><strong>MAE (Error Absoluto Medio):</strong> El MAE de 0.323 indica el promedio de los errores absolutos entre las predicciones y los valores reales, siendo un valor bajo que lo podemos asociar a un buen ajuste de la variable temperatura a este modelo de predicción.</p></li>
 <li><p><strong>MPE (Error Porcentual Medio):</strong> Con un valor de -0.101%, el MPE indica que, en promedio, las predicciones son ligeramente menores que los valores reales, pero el porcentaje es muy pequeño, lo que sugiere que el modelo es bastante preciso en términos porcentuales.</p></li>
-<li><p><strong>MAPE (Error Porcentual Absoluto Medio):</strong> El MAPE de 2.404% indica que, en promedio, las predicciones están dentro de un 2.404% de los valores reales. lo cual lo poedemos asociar a un un buen nivel de precisión, teniendo en cuenta que el nivel de confianza usado es del 95%.</p></li>
+<li><p><strong>MAPE (Error Porcentual Absoluto Medio):</strong> El MAPE de 2.404% indica que, en promedio, las predicciones están dentro de un 2.404% de los valores reales. lo cual lo podemos asociar a un un buen nivel de precisión, teniendo en cuenta que el nivel de confianza usado es del 95%.</p></li>
 </ul>
 <p>Finalmente, este modelo es aplicable a la variable en estudio “Temperatura promedio de la ciudad de Bogotá”, teniendo presente la tendencia y estacionalidad presente en este conjunto de datos.</p>
 
+</div>
+</div>
+<h3>Referencias<a href="referencias.html#referencias" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body" entry-spacing="0">
+<div id="ref-Taylor02012018" class="csl-entry">
+<div class="csl-left-margin">[10] </div><div class="csl-right-inline">S. J. Taylor and B. L. and, <span>“Forecasting at scale,”</span> <em>The American Statistician</em>, vol. 72, no. 1, pp. 37–45, 2018, doi: <a href="https://doi.org/10.1080/00031305.2017.1380080">10.1080/00031305.2017.1380080</a>.</div>
 </div>
 </div>
             </section>
