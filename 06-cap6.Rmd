@@ -79,12 +79,11 @@ futuro <- make_future_dataframe(modelo, periods = 12, freq = "month")
 # Realizar la predicción
 prediccion <- predict(modelo, futuro)
 
-# Corregir formato de fechas (evita problemas con filtros)
 prediccion$ds <- as.Date(prediccion$ds)
 df_prophet$ds <- as.Date(df_prophet$ds)
 
- # Paso 6: Graficar resultados con plot()
-# Visualización base con intervalos de confianza (por defecto al 80%)
+ # Paso 6: Graficar resultados
+# Visualización base con intervalos de confianza)
 
 forecast=predict(modelo,futuro)
 dyplot.prophet(modelo, forecast)
@@ -92,7 +91,6 @@ dyplot.prophet(modelo, forecast)
 # Componentes del modelo (tendencia y estacionalidad)
 prophet_plot_components(modelo,forecast)
 
-####
 tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')])
 
 ```
@@ -137,7 +135,7 @@ tabla_metricas <- data.frame(
   Valor = round(c(me_total, rmse_total, mae_total, mpe_total, mape_total, mase_total), 3)
 )
 
-kable(tabla_metricas, caption = "Métricas del modelo") %>%
+kable(tabla_metricas) %>%
   kable_styling(
     bootstrap_options = c("striped", "hover", "condensed", "responsive"),
     full_width = FALSE,

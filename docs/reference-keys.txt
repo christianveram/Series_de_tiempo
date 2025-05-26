@@ -1,4 +1,3 @@
-tab:unnamed-chunk-32
 introducción
 medias-móviles-rezagos-y-descomposición-de-la-serie-temporal
 promedios-móviles-sma-de-7-y-30-días
