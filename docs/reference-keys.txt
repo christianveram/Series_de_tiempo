@@ -27,3 +27,13 @@ cargar-los-datos.
 modelo-prophet.-1
 predicciones-próximos-12-meses.
 métricas-del-modelo.
+redes-de-elman-y-jordan.
+carga-de-datos.
+preparación-de-datos-para-rsnns.
+optimización-de-hiperparámetros.
+tabla-de-mejores-parámetros
+visualización-con-plotly
+métricas-de-desempeño.-1
+modelo-elman
+modelo-jordan
+predicciones-de-temperatura-c---próximos-12-meses.

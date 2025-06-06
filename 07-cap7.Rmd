@@ -1,1 +1,481 @@
+# Redes de ELMAN y Jordan.
 
+Christian Vera, Yuli Deaquiz y Juan Rodríguez
+
+06/06/2025
+
+Las redes neuronales de Elman y Jordan son dos tipos de redes neuronales recurrentes (RNN), las cuales tienen como característica principal que incorporan conexiones de retroalimentación para el procesamiento de secuencias de datos, como por ejemplo series de tiempo, texto o señales.
+
+Ambos modelos extienden la arquitectura de las redes neuronales tradicionales añadiendo una memoria temporal que les permite recordar información de pasos anteriores, lo cual es esencial para detectar patrones temporales o secuenciales.
+
+-   **Red neuronal de Elman:** es un tipo de red neuronal recurrente que incorpora una capa de contexto donde se almacenan los valores anteriores de la capa oculta. Esta estructura le permite mantener una forma de memoria temporal, la cual es de utilidad para procesar datos secuenciales como series de tiempo. Al usar tanto la entrada actual como el estado oculto previo, la red puede aprender patrones dinámicos en los datos, lo que la hace ideal para tareas donde el pasado influye directamente en el futuro.
+
+-   **Red neuronal de Jordan:** es una red recurrente, pero en lugar de retroalimentar la capa oculta, retroalimenta la salida del modelo hacia una capa de contexto. Esta capa actúa como memoria de las predicciones anteriores, que se combinan con la entrada actual para generar la próxima salida. De esta forma, el modelo tiene en cuenta sus propias decisiones pasadas al hacer nuevas predicciones, lo que es útil en sistemas donde el comportamiento anterior del modelo afecta el futuro, como en control de procesos o generación de secuencias.
+
+A continuación se realiza el pronóstico de la serie temporal de la temperatura en la ciudad de Bogotá utilizando redes neuronales recurrentes de tipo Elman y Jordan. Para ello, se emplean los datos mensuales desde 1975, los cuales son normalizados y estructurados con rezagos para capturar la estacionalidad anual. Ambos modelos son entrenados sobre esta serie y posteriormente se realiza una proyección a 12 meses hacia el futuro de manera autoregresiva, es decir, utilizando las propias predicciones del modelo como insumo para los siguientes pasos. Finalmente, se visualizan tanto los ajustes sobre los datos históricos como las proyecciones futuras, y se evalúa el desempeño de cada red mediante métricas de error como ME, MAE, MPE y MAPE, con el objetivo de comparar su capacidad predictiva.
+
+## Carga de datos.
+
+En primer lugar se filtran los datos a partir de 1975 y a igual que en los casos anteriores se calcula la temperatura promedio mensual.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE, results='hide'}
+
+# Cargar librerías necesarias
+
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(kableExtra)
+  library(plotly)
+})
+library(lubridate)
+library(RSNNS)
+library(Metrics)
+
+# Descargar y preparar datos
+url <- "https://raw.githubusercontent.com/christianveram/Series_de_tiempo/refs/heads/main/bases/temperaturas_final.csv"
+datos <- read.csv(url)
+datos$time <- as.Date(datos$time)
+
+# Datos mensuales
+datos_mensual <- datos %>%
+  filter(time >= as.Date("1975-01-01")) %>%
+  mutate(mes = floor_date(time, "month"),
+         tavg = round(tavg, 2)) %>%
+  group_by(mes) %>%
+  summarise(tavg = mean(tavg, na.rm = TRUE)) %>%
+  ungroup()
+
+ts_mensual_original <- ts(datos_mensual$tavg, start = c(1975, 1), frequency = 12)
+
+
+```
+
+## Preparación de datos para RSNNS.
+
+Posteriormente se normaliza la serie temporal de temperaturas para obtener valores entre 0 y 1. Seguidamente se crea una matriz con 12 rezagos, que usa los valores de los 12 meses anteriores para predecir el siguiente mes y de esta manera capturar la estacionalidad anual de la serie de tiempo.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE,results='hide'}
+# 1. Preparación de datos para RSNNS
+# Normalización de la serie
+min_val <- min(ts_mensual_original)
+max_val <- max(ts_mensual_original)
+ts_mensual_norm <- (ts_mensual_original - min_val) / (max_val - min_val)
+
+# Función para crear matriz de lags
+create_lagged_matrix <- function(data, lags = 12) {
+  n <- length(data)
+  input_matrix <- matrix(nrow = n - lags, ncol = lags)
+  output_vector <- numeric(n - lags)
+
+  for (i in 1:(n - lags)) {
+    input_matrix[i, ] <- data[i:(i + lags - 1)]
+    output_vector[i] <- data[i + lags]
+  }
+  list(inputs = input_matrix, targets = output_vector)
+}
+
+# Usaremos 12 lags para capturar la estacionalidad anual
+num_lags <- 12
+lagged_data <- create_lagged_matrix(ts_mensual_norm, lags = num_lags)
+inputs <- lagged_data$inputs
+targets <- lagged_data$targets
+
+# Función de denormalización
+denormalize <- function(x_norm, min_val, max_val) {
+  x_norm * (max_val - min_val) + min_val
+}
+
+```
+
+## Optimización de hiperparámetros.
+
+Para obtener mejores resultados es pertinente evaluar la mejor combinación de parámetros que garantice un equilibrio óptimo entre capacidad de aprendizaje, velocidad de convergencia y tiempo de entrenamiento, evitando tanto el subajuste (modelo demasiado simple) como el sobreajuste (modelo que se ajusta demasiado a los datos de entrenamiento. Para esto se evaluan las distintas combinaciones de los parametrosde número de neuronas ocultas (hidden_units), tasas de aprendizaje (**learning_rate**) y número máximo de iteraciones (**max_iter**). El parámetro **hidden_units** define cuántas neuronas hay en la capa oculta de la red, afectando la capacidad del modelo para aprender patrones complejos. **learning_rate** controla qué tan rápido se ajustan los pesos durante el entrenamiento, influyendo directamente en la calidad del aprendizaje y **max_iter** determina el máximo número de ciclos de entrenamiento, limitando el tiempo de entrenamiento y evitando sobre ajuste.
+
+Para llevar a cabo la evaluación de estas combinaciones se utiliza validación cruzada temporal en 5 pliegues y se seleccionan los mejores parámetros basados en el menor MSE promedio para entrenar los modelos finales.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE,results='hide'}
+
+##  2. OPTIMIZACIÓN DE HIPERPARÁMETROS
+
+# Definir grilla de parámetros a probar
+param_grid <- expand.grid(
+  hidden_units = c(5, 8, 10, 15, 20),
+  learning_rate = c(0.001, 0.01, 0.05, 0.1),
+  max_iter = c(50, 100, 150, 200)
+)
+
+# Función para validación cruzada con series temporales
+time_series_cv <- function(inputs, targets, param_grid, k_folds = 5) {
+  n <- nrow(inputs)
+  fold_size <- floor(n / k_folds)
+  
+  results_elman <- data.frame()
+  results_jordan <- data.frame()
+  
+  cat("Iniciando optimización de hiperparámetros...\n")
+  cat("Total de combinaciones a probar:", nrow(param_grid), "\n")
+  
+  for (i in 1:nrow(param_grid)) {
+    hidden_units <- param_grid$hidden_units[i]
+    learning_rate <- param_grid$learning_rate[i]
+    max_iter <- param_grid$max_iter[i]
+    
+    if (i %% 10 == 0) {
+      cat("Progreso:", i, "/", nrow(param_grid), "\n")
+    }
+    
+    cv_errors_elman <- numeric(k_folds)
+    cv_errors_jordan <- numeric(k_folds)
+    
+    for (fold in 1:k_folds) {
+      # División temporal de los datos
+      test_start <- (fold - 1) * fold_size + 1
+      test_end <- min(fold * fold_size, n)
+      
+      if (test_start > 1) {
+        train_inputs <- inputs[1:(test_start-1), , drop = FALSE]
+        train_targets <- targets[1:(test_start-1)]
+        test_inputs <- inputs[test_start:test_end, , drop = FALSE]
+        test_targets <- targets[test_start:test_end]
+        
+        # Entrenar modelos solo si hay suficientes datos de entrenamiento
+        if (nrow(train_inputs) > hidden_units) {
+          tryCatch({
+            # Modelo Elman
+            set.seed(123)
+            model_elman <- elman(train_inputs, train_targets,
+                               size = c(hidden_units),
+                               learnFuncParams = c(learning_rate),
+                               maxit = max_iter,
+                               linOut = TRUE)
+            pred_elman <- predict(model_elman, test_inputs)
+            cv_errors_elman[fold] <- mean((test_targets - pred_elman)^2)
+            
+            # Modelo Jordan
+            set.seed(123)
+            model_jordan <- jordan(train_inputs, train_targets,
+                                 size = c(hidden_units),
+                                 learnFuncParams = c(learning_rate),
+                                 maxit = max_iter,
+                                 linOut = TRUE)
+            pred_jordan <- predict(model_jordan, test_inputs)
+            cv_errors_jordan[fold] <- mean((test_targets - pred_jordan)^2)
+            
+          }, error = function(e) {
+            cv_errors_elman[fold] <- Inf
+            cv_errors_jordan[fold] <- Inf
+          })
+        } else {
+          cv_errors_elman[fold] <- Inf
+          cv_errors_jordan[fold] <- Inf
+        }
+      } else {
+        cv_errors_elman[fold] <- Inf
+        cv_errors_jordan[fold] <- Inf
+      }
+    }
+    
+    # Guardar resultados
+    results_elman <- rbind(results_elman, data.frame(
+      hidden_units = hidden_units,
+      learning_rate = learning_rate,
+      max_iter = max_iter,
+      cv_mse = mean(cv_errors_elman[is.finite(cv_errors_elman)])
+    ))
+    
+    results_jordan <- rbind(results_jordan, data.frame(
+      hidden_units = hidden_units,
+      learning_rate = learning_rate,
+      max_iter = max_iter,
+      cv_mse = mean(cv_errors_jordan[is.finite(cv_errors_jordan)])
+    ))
+  }
+  
+  return(list(elman = results_elman, jordan = results_jordan))
+}
+
+# Ejecutar optimización
+cat("Ejecutando validación cruzada...\n")
+cv_results <- time_series_cv(inputs, targets, param_grid, k_folds = 5)
+
+# Encontrar mejores parámetros
+best_params_elman <- cv_results$elman[which.min(cv_results$elman$cv_mse), ]
+best_params_jordan <- cv_results$jordan[which.min(cv_results$jordan$cv_mse), ]
+
+cat("Optimización completada!\n\n")
+
+# Mostrar mejores parámetros de forma limpia
+cat("=== MEJORES PARÁMETROS ENCONTRADOS ===\n")
+cat("Mejores parámetros Elman:\n")
+cat("  Neuronas ocultas:", best_params_elman$hidden_units, "\n")
+cat("  Tasa de aprendizaje:", best_params_elman$learning_rate, "\n")
+cat("  Máx. iteraciones:", best_params_elman$max_iter, "\n")
+cat("  MSE validación:", round(best_params_elman$cv_mse, 6), "\n\n")
+
+cat("Mejores parámetros Jordan:\n")
+cat("  Neuronas ocultas:", best_params_jordan$hidden_units, "\n")
+cat("  Tasa de aprendizaje:", best_params_jordan$learning_rate, "\n")
+cat("  Máx. iteraciones:", best_params_jordan$max_iter, "\n")
+cat("  MSE validación:", round(best_params_jordan$cv_mse, 6), "\n\n")
+
+
+```
+
+```{r, include=TRUE, message=FALSE, warning=FALSE,results='hide'}
+
+# 3. Entrenar modelos finales con mejores parámetros
+
+cat("Entrenando modelos finales con mejores parámetros...\n")
+
+# --- Red Elman con mejores parámetros ---
+set.seed(123)
+elman_model_optimized <- elman(inputs,
+                              targets,
+                              size = c(best_params_elman$hidden_units),
+                              learnFuncParams = c(best_params_elman$learning_rate),
+                              maxit = best_params_elman$max_iter,
+                              linOut = TRUE)
+
+fitted_elman_norm <- predict(elman_model_optimized, inputs)
+
+# --- Red Jordan con mejores parámetros ---
+set.seed(123)
+jordan_model_optimized <- jordan(inputs,
+                                targets,
+                                size = c(best_params_jordan$hidden_units),
+                                learnFuncParams = c(best_params_jordan$learning_rate),
+                                maxit = best_params_jordan$max_iter,
+                                linOut = TRUE)
+
+fitted_jordan_norm <- predict(jordan_model_optimized, inputs)
+
+# 4. Denormalización de resultados
+fitted_elman <- denormalize(fitted_elman_norm, min_val, max_val)
+fitted_jordan <- denormalize(fitted_jordan_norm, min_val, max_val)
+
+# Los valores ajustados no cubren los primeros num_lags puntos originales
+full_fitted_elman <- c(rep(NA, num_lags), fitted_elman)
+full_fitted_jordan <- c(rep(NA, num_lags), fitted_jordan)
+
+# 5. Proyección a 12 meses con modelos optimizados
+
+n_forecast <- 12
+forecast_elman_norm <- numeric(n_forecast)
+forecast_jordan_norm <- numeric(n_forecast)
+
+# Últimos num_lags valores normalizados de la serie original para iniciar la predicción
+current_input_elman <- tail(ts_mensual_norm, num_lags)
+current_input_jordan <- tail(ts_mensual_norm, num_lags)
+
+for (i in 1:n_forecast) {
+  # Predicción Elman
+  pred_elman_norm <- predict(elman_model_optimized, matrix(current_input_elman, nrow = 1))
+  forecast_elman_norm[i] <- pred_elman_norm[1,1]
+  current_input_elman <- c(current_input_elman[-1], pred_elman_norm[1,1])
+
+  # Predicción Jordan
+  pred_jordan_norm <- predict(jordan_model_optimized, matrix(current_input_jordan, nrow = 1))
+  forecast_jordan_norm[i] <- pred_jordan_norm[1,1]
+  current_input_jordan <- c(current_input_jordan[-1], pred_jordan_norm[1,1])
+}
+
+# Denormalizar proyecciones
+forecast_elman <- denormalize(forecast_elman_norm, min_val, max_val)
+forecast_jordan <- denormalize(forecast_jordan_norm, min_val, max_val)
+
+```
+
+
+## Tabla de mejores parámetros
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# 6. Tabla de mejores parámetros
+tabla_mejores_parametros <- data.frame(
+  Modelo = c("Elman", "Jordan"),
+  Neuronas_Ocultas = c(best_params_elman$hidden_units, best_params_jordan$hidden_units),
+  Tasa_Aprendizaje = c(best_params_elman$learning_rate, best_params_jordan$learning_rate),
+  Max_Iteraciones = c(best_params_elman$max_iter, best_params_jordan$max_iter),
+  MSE_Validacion = round(c(best_params_elman$cv_mse, best_params_jordan$cv_mse), 6)
+)
+
+# TABLA DE MEJORES PARÁMETROS
+kable(tabla_mejores_parametros,
+      col.names = c("Modelo", "Neuronas Ocultas", "Tasa de Aprendizaje", 
+                    "Máx. Iteraciones", "MSE Validación")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = FALSE) %>%
+  column_spec(1, bold = TRUE)
+```
+
+## Visualización con Plotly
+A continuación se presenta la visualización de las predicciones realizadas de los dos modelos, junto con su ajuste y los valores reales de la serie.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# 7. Visualización con Plotly 
+
+# Preparar datos para el gráfico
+df_plot <- data.frame(
+  Fecha = datos_mensual$mes,
+  Original = ts_mensual_original
+)
+
+# Añadir ajustados (alineados con las fechas originales)
+df_plot$Ajuste_Elman <- full_fitted_elman
+df_plot$Ajuste_Jordan <- full_fitted_jordan
+
+# Fechas para la proyección
+last_date_original <- tail(datos_mensual$mes, 1)
+fechas_proyeccion <- seq(from = last_date_original %m+% months(1), by = "month", length.out = n_forecast)
+
+# Crear dataframes para las proyecciones
+df_forecast_elman <- data.frame(Fecha = fechas_proyeccion, Proyeccion_Elman = forecast_elman)
+df_forecast_jordan <- data.frame(Fecha = fechas_proyeccion, Proyeccion_Jordan = forecast_jordan)
+
+# Gráfico interactivo con mejoras visuales
+fecha_inicio_plot <- as.Date("2000-01-01")
+fecha_fin_plot <- max(df_forecast_elman$Fecha)
+
+plot_interactivo <- plot_ly(df_plot, x = ~Fecha) %>%
+  add_lines(y = ~Original, name = "Serie Original",
+            line = list(color = 'rgba(31, 119, 180, 1)', width = 2.5),
+            hovertemplate = paste('<b>Fecha:</b> %{x|%Y-%m-%d}<br>',
+                                  '<b>Original:</b> %{y:.2f}°C<extra></extra>')) %>%
+  add_lines(y = ~Ajuste_Elman, name = "Ajuste Elman (Optimizado)",
+            line = list(color = 'rgba(255, 127, 14, 1)', dash = 'dash', width = 2),
+            hovertemplate = paste('<b>Fecha:</b> %{x|%Y-%m-%d}<br>',
+                                  '<b>Ajuste Elman:</b> %{y:.2f}°C<extra></extra>')) %>%
+  add_lines(y = ~Ajuste_Jordan, name = "Ajuste Jordan (Optimizado)",
+            line = list(color = 'rgba(44, 160, 44, 1)', dash = 'dot', width = 2),
+            hovertemplate = paste('<b>Fecha:</b> %{x|%Y-%m-%d}<br>',
+                                  '<b>Ajuste Jordan:</b> %{y:.2f}°C<extra></extra>')) %>%
+  add_lines(data = df_forecast_elman, x = ~Fecha, y = ~Proyeccion_Elman,
+            name = "Proyección Elman (12 meses)",
+            line = list(color = 'rgba(255, 127, 14, 1)', width = 2.5),
+            hovertemplate = paste('<b>Fecha:</b> %{x|%Y-%m-%d}<br>',
+                                  '<b>Proyección Elman:</b> %{y:.2f}°C<extra></extra>')) %>%
+  add_lines(data = df_forecast_jordan, x = ~Fecha, y = ~Proyeccion_Jordan,
+            name = "Proyección Jordan (12 meses)",
+            line = list(color = 'rgba(44, 160, 44, 1)', width = 2.5),
+            hovertemplate = paste('<b>Fecha:</b> %{x|%Y-%m-%d}<br>',
+                                  '<b>Proyección Jordan:</b> %{y:.2f}°C<extra></extra>')) %>%
+  layout(title = list(text = "<b>Redes Elman y Jordan Optimizadas: Ajuste y Proyección de Temperatura</b>",
+                      font = list(size = 16, color = 'rgb(50, 50, 50)')),
+         xaxis = list(title = "<b>Fecha</b>", showgrid = TRUE, gridcolor = 'lightgray',
+                      tickformat = "%Y", dtick = "M12",
+                      range = c(fecha_inicio_plot, fecha_fin_plot)),
+         yaxis = list(title = "<b>Temperatura Promedio (°C)</b>", showgrid = TRUE, gridcolor = 'lightgray'),
+         legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.2,
+                       font = list(size = 11, color = 'rgb(60, 60, 60)')),
+         hovermode = "x unified",
+         plot_bgcolor = 'rgb(248, 248, 248)',
+         paper_bgcolor = 'rgb(255, 255, 255)')
+
+plot_interactivo
+
+```
+
+## Métricas de Desempeño.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# 8. Tabla de Métricas de Desempeño (sobre el conjunto de entrenamiento)
+
+library(Metrics)  # Asegúrate de tener esta librería cargada
+
+n_entrenamiento <- length(targets)
+original_for_metrics <- tail(ts_mensual_original, n_entrenamiento)
+fitted_elman_for_metrics <- head(fitted_elman, n_entrenamiento)
+fitted_jordan_for_metrics <- head(fitted_jordan, n_entrenamiento)
+
+# Calcular métricas para Elman
+metrics_elman <- data.frame(
+  Metrica = c("ME (Error Medio)", 
+              "RMSE (Raíz del Error Cuadrático Medio)", 
+              "MAE (Error Absoluto Medio)", 
+              "MPE (Error Porcentual Medio)", 
+              "MAPE (Error Porcentual Absoluto Medio)"),
+  Valor = c(
+    mean(original_for_metrics - fitted_elman_for_metrics),
+    rmse(original_for_metrics, fitted_elman_for_metrics),
+    mae(original_for_metrics, fitted_elman_for_metrics),
+    mean((original_for_metrics - fitted_elman_for_metrics) / original_for_metrics) * 100,
+    mape(original_for_metrics, fitted_elman_for_metrics) * 100
+  )
+)
+
+# Calcular métricas para Jordan
+metrics_jordan <- data.frame(
+  Metrica = c("ME (Error Medio)", 
+              "RMSE (Raíz del Error Cuadrático Medio)", 
+              "MAE (Error Absoluto Medio)", 
+              "MPE (Error Porcentual Medio)", 
+              "MAPE (Error Porcentual Absoluto Medio)"),
+  Valor = c(
+    mean(original_for_metrics - fitted_jordan_for_metrics),
+    rmse(original_for_metrics, fitted_jordan_for_metrics),
+    mae(original_for_metrics, fitted_jordan_for_metrics),
+    mean((original_for_metrics - fitted_jordan_for_metrics) / original_for_metrics) * 100,
+    mape(original_for_metrics, fitted_jordan_for_metrics) * 100
+  )
+)
+
+# Combinar métricas en una tabla
+tabla_metricas <- rbind(
+  cbind(Modelo = "Elman", metrics_elman),
+  cbind(Modelo = "Jordan", metrics_jordan)
+)
+
+tabla_metricas$Valor <- round(tabla_metricas$Valor, 4)
+
+# Mostrar tabla de métricas
+kable(tabla_metricas) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = FALSE) %>%
+  column_spec(1, bold = TRUE) %>%
+  collapse_rows(columns = 1, valign = "top")
+```
+
+A continuación se resaltan los aspectos mas relevantes de las métricas obtenidas:
+
+### Modelo ELMAN:
+
+-   **ME (Error Medio):** El valor de ME es **-0.2647**, lo que indica que, en promedio, el modelo tiende a subestimar levemente las temperaturas reales. Aunque el sesgo es negativo, su magnitud es moderada, por lo que no representa un desajuste grave.
+
+- **RMSE (Raíz del Error Cuadrático Medio):** El RMSE es **0.4850**, lo cual representa el error promedio en términos de desviación cuadrática. Aunque mayor que el MAE, este valor sigue siendo razonablemente bajo, lo que sugiere un ajuste aceptable.
+
+- **MAE (Error Absoluto Medio):** El valor de **0.3923** representa el promedio de los errores absolutos, indicando que las predicciones se desvían en promedio unos 0.39 grados de los valores reales. Es un valor moderadamente bajo, compatible con un desempeño sólido del modelo.
+
+- **MPE (Error Porcentual Medio):** Con un MPE de **-2.0745%**, el modelo tiende a subestimar en promedio las temperaturas en un 2.07%. Aunque hay un sesgo, este es moderado, lo cual puede ser aceptable en el contexto climático.
+
+- **MAPE (Error Porcentual Absoluto Medio):** El MAPE de **2.9663%** indica que, en promedio, las predicciones del modelo Elman están dentro de un 3% de los valores reales. Esto sugiere un nivel de precisión bastante bueno, especialmente en series temporales de temperatura.
+
+###  Modelo Jordan:
+
+-   **ME (Error Medio):** El valor de **-0.2219** muestra que el modelo Jordan también subestima ligeramente los valores reales, aunque en menor medida en comparación que Elman
+
+- **RMSE (Raíz del Error Cuadrático Medio):** El RMSE es **0.4933**, ligeramente superior al de Elman, lo que indica que los errores más grandes tienen un efecto levemente mayor en este modelo. Aun así, el valor es bajo y representa un buen ajuste global.
+- 
+**MAE (Error Absoluto Medio):** El valor de **0.3904** es similar al de Elman, lo que indica una precisión similar en términos de error absoluto promedio.
+
+- **MPE (Error Porcentual Medio):** Con **-1.7719%**, el modelo Jordan tiene un sesgo porcentual menor que Elman, lo cual sugiere una menor tendencia a subestimar las temperaturas.
+
+- **MAPE (Error Porcentual Absoluto Medio):** El valor de **2.9479%** indica que, en promedio, las predicciones están dentro de un 2.95% de los valores reales, reflejando una muy buena capacidad predictiva del modelo Jordan, ligeramente mejor que Elman en este aspecto.
+
+## Predicciones de Temperatura (°C) - Próximos 12 Meses.
+
+```{r, include=TRUE, message=FALSE, warning=FALSE}
+# 9. Resumen de predicciones
+# PREDICCIONES PARA LOS PRÓXIMOS 12 MESES
+df_predicciones <- data.frame(
+  Mes = format(fechas_proyeccion, "%Y-%m"),
+  Elman_Optimizado = round(forecast_elman, 2),
+  Jordan_Optimizado = round(forecast_jordan, 2)
+)
+
+kable(df_predicciones,
+      col.names = c("Mes", "Elman Optimizado", "Jordan Optimizado")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = FALSE)
+
+
+```
